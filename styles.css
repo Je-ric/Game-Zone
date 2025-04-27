@@ -1,0 +1,24 @@
+.choice-btn {
+    transition: transform 0.2s;
+}
+.choice-btn:hover {
+    transform: scale(1.1);
+}
+.choice-btn:active {
+    transform: scale(0.95);
+}
+.result-animation {
+    animation: pulse 1s;
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+.name-input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #4f46e5;
+    outline: none;
+    font-weight: bold;
+}
