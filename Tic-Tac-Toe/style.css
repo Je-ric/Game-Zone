@@ -1,0 +1,71 @@
+* {
+    font-family: 'Press Start 2P', cursive;
+    user-select: none;
+    }
+
+    body {
+        background-color: #1c1c1c;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: white;
+    }
+
+    .game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .game-board {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        grid-template-rows: repeat(3, 100px);
+        gap: 10px;
+        background-color: #2a2a2a;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .cell {
+        background-color: #3a3a3a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.5rem;
+        color: white;
+        border: 2px solid #555;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .cell:hover {
+        background-color: #4a4a4a;
+    }
+
+    .cell.X {
+        color: #e74c3c; /* red */
+    }
+
+    .cell.O {
+        color: #3498db; /* blue */
+    }
+
+    .cell.winning {
+        background-color: #27ae60 !important; /* green */
+    }
+
+    #resetButton {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #555;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
