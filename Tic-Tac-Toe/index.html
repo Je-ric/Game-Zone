@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Tic Tac Toe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Press Start 2P', cursive;
+      user-select: none;
+    }
+
+    body {
+      background-color: #1c1c1c;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 10px;
+      background-color: #2a2a2a;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .cell {
+      background-color: #3a3a3a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+      color: white;
+      border: 2px solid #555;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .cell:hover {
+      background-color: #4a4a4a;
+    }
+
+    .cell.X {
+      color: #e74c3c; /* red */
+    }
+
+    .cell.O {
+      color: #3498db; /* blue */
+    }
+
+    .cell.winning {
+      background-color: #27ae60 !important; /* green */
+    }
+
+    #resetButton {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="game-board" id="gameBoard"></div>
+    <button id="resetButton">Reset Game</button>
+  </div>
+
+  <script>
+    const gameBoard = document.getElementById('gameBoard');
+    const resetButton = document.getElementById('resetButton');
+    let board = Array(9).fill(null);
+    let isXTurn = true;
+    const winningCombinations = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
+
+    function initializeBoard() {
+      gameBoard.innerHTML = '';
+      board.fill(null);
+      isXTurn = true;
+
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.dataset.index = i;
+        cell.addEventListener('click', handleCellClick);
+        gameBoard.appendChild(cell);
+      }
+    }
+
+    function handleCellClick(e) {
+      const index = e.target.dataset.index;
+      if (board[index]) return;
+
+      const mark = isXTurn ? 'X' : 'O';
+      board[index] = mark;
+      e.target.textContent = mark;
+      e.target.classList.add(mark);
+
+      if (checkWinner(mark)) {
+        highlightWinner(mark);
+        disableBoard();
+        return;
+      }
+
+      isXTurn = !isXTurn;
+    }
+
+    function checkWinner(player) {
+      return winningCombinations.some(combo => {
+        return combo.every(index => board[index] === player);
+      });
+    }
+
+    function highlightWinner(player) {
+      winningCombinations.forEach(combo => {
+        if (combo.every(index => board[index] === player)) {
+          combo.forEach(index => {
+            document.querySelector(`[data-index="${index}"]`).classList.add('winning');
+          });
+        }
+      });
+    }
+
+    function disableBoard() {
+      const allCells = document.querySelectorAll('.cell');
+      allCells.forEach(cell => cell.removeEventListener('click', handleCellClick));
+    }
+
+    resetButton.addEventListener('click', initializeBoard);
+
+    initializeBoard();
+  </script>
+</body>
+</html>
