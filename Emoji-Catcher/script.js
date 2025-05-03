@@ -6,7 +6,6 @@ const emojiModeInputs = document.querySelectorAll("input[name='emojiMode']");
 const timeSelect = document.querySelector("#time-select");
 const restartButton = document.getElementById("restart-button");
 
-
 let score = 0;
 let activeTileId;
 let timeRemaining = 60;  
@@ -41,13 +40,11 @@ const emojiImages = [
 let selectedEmoji = emojiImages[0];
 let emojiMode = "single";
 
-
 emojiModeInputs.forEach(input => {
     input.addEventListener("change", (e) => {
         emojiMode = e.target.value;
     });
 });
-
 
 timeSelect.addEventListener("change", (e) => {
     timeRemaining = parseInt(e.target.value);
@@ -56,18 +53,15 @@ timeSelect.addEventListener("change", (e) => {
 
 function showRandomEmoji() {
     tiles.forEach(tile => tile.style.backgroundImage = ""); 
-    
     const randomTileIndex = Math.floor(Math.random() * tiles.length);
     const selectedTile = tiles[randomTileIndex];
-  
     let emojiToUse = selectedEmoji;
-  
     
     if (emojiMode === "random") {
-      const randomEmojiIndex = Math.floor(Math.random() * emojiImages.length);
-      emojiToUse = emojiImages[randomEmojiIndex];
+        const randomEmojiIndex = Math.floor(Math.random() * emojiImages.length);
+        emojiToUse = emojiImages[randomEmojiIndex];
     }
-  
+
     selectedTile.style.backgroundImage = `url('${emojiToUse}')`;
     selectedTile.style.backgroundSize = "cover";
     selectedTile.style.backgroundPosition = "center";
@@ -75,88 +69,82 @@ function showRandomEmoji() {
 }
 
 tiles.forEach(tile => {
-  tile.addEventListener("mousedown", () => {
-    if (!isGameActive) return;
-    if (tile.id === activeTileId) {
-      score++;
-      scoreDisplay.textContent = score;
-      activeTileId = null;
-    }
-  });
+    tile.addEventListener("mousedown", () => {
+        if (!isGameActive) return;
+        if (tile.id === activeTileId) {
+        score++;
+        scoreDisplay.textContent = score;
+        activeTileId = null;
+        }
+    });
 });
 
 function startEmojiLoop() {
-  emojiIntervalId = setInterval(showRandomEmoji, 600);
+    emojiIntervalId = setInterval(showRandomEmoji, 600);
 }
 
 function startCountdown() {
     countdownIntervalId = setInterval(() => {
-      timeRemaining--;
-      timerDisplay.textContent = timeRemaining;
-  
-      if (timeRemaining === 0) {
-        clearInterval(countdownIntervalId);
-        clearInterval(emojiIntervalId);
-        isGameActive = false;
-        endGame(); 
-      }
+        timeRemaining--;
+        timerDisplay.textContent = timeRemaining;
+    
+        if (timeRemaining === 0) {
+            clearInterval(countdownIntervalId);
+            clearInterval(emojiIntervalId);
+            isGameActive = false;
+            endGame(); 
+        }
     }, 1000);
-  }
+}
 
 startButton.addEventListener("click", () => {
-  if (isGameActive) return;
+    if (isGameActive) return;
 
-  score = 0;
-  
-  timeRemaining = parseInt(timeSelect.value);
-  scoreDisplay.textContent = score;
-  timerDisplay.textContent = timeRemaining;
-  isGameActive = true;
+    score = 0;
+    
+    timeRemaining = parseInt(timeSelect.value);
+    scoreDisplay.textContent = score;
+    timerDisplay.textContent = timeRemaining;
+    isGameActive = true;
 
-  if (emojiMode === "single") {
-    const randomEmojiIndex = Math.floor(Math.random() * emojiImages.length);
-    selectedEmoji = emojiImages[randomEmojiIndex];
-  }
+    if (emojiMode === "single") {
+        const randomEmojiIndex = Math.floor(Math.random() * emojiImages.length);
+        selectedEmoji = emojiImages[randomEmojiIndex];
+    }
 
-  startEmojiLoop();
-  startCountdown();
+    startEmojiLoop();
+    startCountdown();
 });
 
-
 function startGame() {
-    
     isGameActive = true;
     startEmojiLoop();
     startCountdown();
-  }
-   
-  function endGame() {
+}
+
+function endGame() {
     clearInterval(countdownIntervalId);
     clearInterval(emojiIntervalId);
     isGameActive = false;
 
     document.querySelector("#final-score").textContent = score;
-  
+
     const gameOverModal = document.getElementById("game-over-modal");
     gameOverModal.classList.remove("hidden");
     gameOverModal.classList.add("show");
 }
 
-  
-  
-  document.getElementById("restart-button").addEventListener("click", () => {
-    
+document.getElementById("restart-button").addEventListener("click", () => {
     score = 0;
     timeRemaining = parseInt(timeSelect.value); 
     scoreDisplay.textContent = score;
     timerDisplay.textContent = timeRemaining;
     activeTileId = null;
-  
-    
+
     const gameOverModal = document.getElementById("game-over-modal");
     gameOverModal.classList.remove("show");
     gameOverModal.classList.add("hidden"); 
-  
+
     clearInterval(countdownIntervalId);
     clearInterval(emojiIntervalId);
     startGame();
