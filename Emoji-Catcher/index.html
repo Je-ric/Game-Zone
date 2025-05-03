@@ -17,6 +17,26 @@ body, html {
   color: #ffffff;
 }
 
+.controls {
+  margin-bottom: 1.5rem;
+}
+
+#start-button {
+  padding: 12px 30px;
+  font-size: 18px;
+  background-color: #ffb51b;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#start-button:hover {
+  background-color: #ffaa00;
+}
+
+
 .game-container {
   display: flex;
   flex-direction: column;
@@ -89,6 +109,10 @@ body, html {
         </div>
       </section>
 
+      <section class="controls">
+        <button id="start-button">Start Game</button>
+      </section>
+
       <section class="board-container">
         <div class="game-board">
           <!-- 10 grid tiles -->
@@ -107,19 +131,20 @@ body, html {
     </main>
 
     <script src="script.js">
-        const tiles = document.querySelectorAll(".tile");
+     const tiles = document.querySelectorAll(".tile");
 const timerDisplay = document.querySelector("#timer-display");
 const scoreDisplay = document.querySelector("#score-display");
+const startButton = document.querySelector("#start-button");
 
 let score = 0;
 let activeTileId;
 let timeRemaining = 60;
-let emojiIntervalId;
-let countdownIntervalId;
+let emojiIntervalId = null;
+let countdownIntervalId = null;
+let isGameActive = false;
 
 function showRandomEmoji() {
   tiles.forEach(tile => tile.classList.remove("active-emoji"));
-
   const randomIndex = Math.floor(Math.random() * tiles.length);
   const selectedTile = tiles[randomIndex];
   selectedTile.classList.add("active-emoji");
@@ -128,6 +153,7 @@ function showRandomEmoji() {
 
 tiles.forEach(tile => {
   tile.addEventListener("mousedown", () => {
+    if (!isGameActive) return;
     if (tile.id === activeTileId) {
       score++;
       scoreDisplay.textContent = score;
@@ -148,14 +174,26 @@ function startCountdown() {
     if (timeRemaining === 0) {
       clearInterval(countdownIntervalId);
       clearInterval(emojiIntervalId);
+      isGameActive = false;
       alert(`Game Over! Final Score: ${score}`);
     }
   }, 1000);
 }
 
-// Initialize game
-startEmojiLoop();
-startCountdown();
+startButton.addEventListener("click", () => {
+  if (isGameActive) return;
+
+  // Reset game state
+  score = 0;
+  timeRemaining = 60;
+  scoreDisplay.textContent = score;
+  timerDisplay.textContent = timeRemaining;
+  isGameActive = true;
+
+  // Start game loops
+  startEmojiLoop();
+  startCountdown();
+});
 
     </script>
   </body>
