@@ -62,8 +62,7 @@ function showRandomEmoji() {
     selectedTile.style.backgroundSize = "cover";
     selectedTile.style.backgroundPosition = "center";
     activeTileId = selectedTile.id;
-  }
-  
+}
 
 tiles.forEach(tile => {
   tile.addEventListener("mousedown", () => {
@@ -90,6 +89,7 @@ function startCountdown() {
       clearInterval(emojiIntervalId);
       isGameActive = false;
       alert(`Game Over! Final Score: ${score}`);
+      saveHighScore();
     }
   }, 1000);
 }
@@ -103,7 +103,6 @@ startButton.addEventListener("click", () => {
   timerDisplay.textContent = timeRemaining;
   isGameActive = true;
 
-  // Set single emoji if in single mode
   if (emojiMode === "single") {
     const randomEmojiIndex = Math.floor(Math.random() * emojiImages.length);
     selectedEmoji = emojiImages[randomEmojiIndex];
@@ -113,43 +112,31 @@ startButton.addEventListener("click", () => {
   startCountdown();
 });
 
+function endGame() {
+  clearInterval(countdownIntervalId);
+  clearInterval(emojiIntervalId);
+  isGameActive = false;
+  document.querySelector("#final-score").textContent = score;
+  document.getElementById("game-over-panel").classList.remove("hidden");
+  saveHighScore();
+}
 
-function showMultipleRandomEmojis() {
-    tiles.forEach(tile => tile.style.backgroundImage = ""); // Reset tiles
-    
-    // Choose multiple random tiles and emojis
-    let selectedTiles = [];
-    for (let i = 0; i < 3; i++) { // Example: 3 tiles
-      const randomTileIndex = Math.floor(Math.random() * tiles.length);
-      const selectedTile = tiles[randomTileIndex];
-  
-      if (!selectedTiles.includes(selectedTile)) {
-        selectedTiles.push(selectedTile);
-        let emojiToUse = emojiMode === "random" 
-                          ? emojiImages[Math.floor(Math.random() * emojiImages.length)] 
-                          : selectedEmoji;
-        selectedTile.style.backgroundImage = `url('${emojiToUse}')`;
-        selectedTile.style.backgroundSize = "cover";
-        selectedTile.style.backgroundPosition = "center";
-      }
-    }
-  }
+document.getElementById("restart-button").addEventListener("click", () => {
+  score = 0;
+  timeRemaining = 60;
+  scoreDisplay.textContent = score;
+  timerDisplay.textContent = timeRemaining;
+  activeTileId = null;
+  document.getElementById("game-over-panel").classList.add("hidden");
+  clearInterval(countdownIntervalId);
+  clearInterval(emojiIntervalId);
+  startGame();
+});
 
-  
-  function endGame() {
-    clearInterval(countdownIntervalId);
-    clearInterval(emojiIntervalId);
-    isGameActive = false;
-    document.querySelector("#final-score").textContent = score;
-    document.getElementById("game-over-panel").classList.remove("hidden");
+function saveHighScore() {
+  const highScore = localStorage.getItem("highScore") || 0;
+  if (score > highScore) {
+    localStorage.setItem("highScore", score);
+    alert("New High Score!");
   }
-  
-  document.getElementById("restart-button").addEventListener("click", () => {
-    score = 0;
-    timeRemaining = 60;
-    scoreDisplay.textContent = score;
-    timerDisplay.textContent = timeRemaining;
-    document.getElementById("game-over-panel").classList.add("hidden");
-    startGame();
-  });
-  
+}
