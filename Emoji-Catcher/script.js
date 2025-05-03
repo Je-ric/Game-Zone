@@ -4,6 +4,8 @@ const scoreDisplay = document.querySelector("#score-display");
 const startButton = document.querySelector("#start-button");
 const emojiModeInputs = document.querySelectorAll("input[name='emojiMode']");
 const timeSelect = document.querySelector("#time-select");
+const restartButton = document.getElementById("restart-button");
+
 
 let score = 0;
 let activeTileId;
@@ -88,19 +90,18 @@ function startEmojiLoop() {
 }
 
 function startCountdown() {
-  countdownIntervalId = setInterval(() => {
-    timeRemaining--;
-    timerDisplay.textContent = timeRemaining;
-
-    if (timeRemaining === 0) {
-      clearInterval(countdownIntervalId);
-      clearInterval(emojiIntervalId);
-      isGameActive = false;
-      alert(`Game Over! Final Score: ${score}`);
-      saveHighScore();
-    }
-  }, 1000);
-}
+    countdownIntervalId = setInterval(() => {
+      timeRemaining--;
+      timerDisplay.textContent = timeRemaining;
+  
+      if (timeRemaining === 0) {
+        clearInterval(countdownIntervalId);
+        clearInterval(emojiIntervalId);
+        isGameActive = false;
+        endGame(); // Show the modal instead of alert
+      }
+    }, 1000);
+  }
 
 startButton.addEventListener("click", () => {
   if (isGameActive) return;
@@ -121,26 +122,44 @@ startButton.addEventListener("click", () => {
   startCountdown();
 });
 
-function endGame() {
-  clearInterval(countdownIntervalId);
-  clearInterval(emojiIntervalId);
-  isGameActive = false;
-  document.querySelector("#final-score").textContent = score;
-  document.getElementById("game-over-panel").classList.remove("hidden");
-  saveHighScore();
-}
-
-document.getElementById("restart-button").addEventListener("click", () => {
-  score = 0;
-  timeRemaining = parseInt(timeSelect.value); // Reset to selected time
-  scoreDisplay.textContent = score;
-  timerDisplay.textContent = timeRemaining;
-  activeTileId = null;
-  document.getElementById("game-over-panel").classList.add("hidden");
-  clearInterval(countdownIntervalId);
-  clearInterval(emojiIntervalId);
-  startGame();
-});
+// Function to start the game logic
+function startGame() {
+    // Reset game state before starting
+    isGameActive = true;
+    startEmojiLoop();
+    startCountdown();
+  }
+   
+  function endGame() {
+    clearInterval(countdownIntervalId);
+    clearInterval(emojiIntervalId);
+    isGameActive = false;
+  
+    // Set the final score in the modal
+    document.querySelector("#final-score").textContent = score;
+  
+    // Show the game over modal
+    const gameOverModal = document.getElementById("game-over-modal");
+    gameOverModal.classList.remove("hidden"); // Make the modal visible
+  
+    saveHighScore();
+  }
+  
+  document.getElementById("restart-button").addEventListener("click", () => {
+    // Reset game state
+    score = 0;
+    timeRemaining = parseInt(timeSelect.value); // Reset to selected time
+    scoreDisplay.textContent = score;
+    timerDisplay.textContent = timeRemaining;
+    activeTileId = null;
+  
+    // Hide the game over modal and restart the game
+    document.getElementById("game-over-modal").classList.add("hidden");
+    clearInterval(countdownIntervalId);
+    clearInterval(emojiIntervalId);
+    startGame();
+  });
+  
 
 function saveHighScore() {
   const highScore = localStorage.getItem("highScore") || 0;

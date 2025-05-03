@@ -113,24 +113,75 @@ body, html {
     display: none;
   }
 
-  #game-over-panel {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #000;
-    color: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
-    font-size: 18px;
+/* Game Over Modal Styles */
+#game-over-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden; /* Hidden by default */
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s ease;
+  }
+  
+  #game-over-modal .modal-content {
+    background-color: #fff;
+    padding: 20px;
     text-align: center;
+    border-radius: 8px;
+    width: 300px;
   }
-
-  #game-over-panel h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
+  
+  #game-over-modal h2 {
+    margin: 0;
+    font-size: 24px;
   }
+  
+  #game-over-modal p {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  
+  #game-over-modal button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  #game-over-modal button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Show the modal */
+  #game-over-modal.show {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  #restart-button {
+    padding: 12px 30px;
+    font-size: 18px;
+    background-color: #ff0033;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  #restart-button:hover {
+    background-color: #ff1a3d;
+  }
+  
 
   #restart-button {
     padding: 12px 30px;
