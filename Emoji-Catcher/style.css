@@ -112,7 +112,6 @@ body, html {
   .hidden {
     display: none;
   }
-
 /* Game Over Modal Styles */
 #game-over-modal {
     position: fixed;
@@ -127,27 +126,34 @@ body, html {
     visibility: hidden; /* Hidden by default */
     opacity: 0;
     transition: visibility 0s, opacity 0.3s ease;
-  }
-  
-  #game-over-modal .modal-content {
+}
+
+#game-over-modal.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+#game-over-modal .modal-content {
     background-color: #fff;
     padding: 20px;
     text-align: center;
     border-radius: 8px;
     width: 300px;
-  }
-  
-  #game-over-modal h2 {
+}
+
+#game-over-modal h2 {
+    color: black;
     margin: 0;
     font-size: 24px;
-  }
-  
-  #game-over-modal p {
+}
+
+#game-over-modal p {
+    color: black;
     font-size: 18px;
     margin: 10px 0;
-  }
-  
-  #game-over-modal button {
+}
+
+#game-over-modal button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
@@ -155,17 +161,12 @@ body, html {
     color: white;
     border: none;
     border-radius: 5px;
-  }
-  
-  #game-over-modal button:hover {
+}
+
+#game-over-modal button:hover {
     background-color: #45a049;
-  }
-  
-  /* Show the modal */
-  #game-over-modal.show {
-    visibility: visible;
-    opacity: 1;
-  }
+}
+
   
   #restart-button {
     padding: 12px 30px;

@@ -9,7 +9,7 @@ const restartButton = document.getElementById("restart-button");
 
 let score = 0;
 let activeTileId;
-let timeRemaining = 60;  // Default time is 60 seconds
+let timeRemaining = 60;  
 let emojiIntervalId = null;
 let countdownIntervalId = null;
 let isGameActive = false;
@@ -41,28 +41,28 @@ const emojiImages = [
 let selectedEmoji = emojiImages[0];
 let emojiMode = "single";
 
-// Emoji Mode Listener
+
 emojiModeInputs.forEach(input => {
     input.addEventListener("change", (e) => {
         emojiMode = e.target.value;
     });
 });
 
-// Time Limit Selection
+
 timeSelect.addEventListener("change", (e) => {
     timeRemaining = parseInt(e.target.value);
-    timerDisplay.textContent = timeRemaining; // Update the displayed time
+    timerDisplay.textContent = timeRemaining; 
 });
 
 function showRandomEmoji() {
-    tiles.forEach(tile => tile.style.backgroundImage = ""); // Reset tiles
+    tiles.forEach(tile => tile.style.backgroundImage = ""); 
     
     const randomTileIndex = Math.floor(Math.random() * tiles.length);
     const selectedTile = tiles[randomTileIndex];
   
     let emojiToUse = selectedEmoji;
   
-    // If random mode is selected, choose a random emoji
+    
     if (emojiMode === "random") {
       const randomEmojiIndex = Math.floor(Math.random() * emojiImages.length);
       emojiToUse = emojiImages[randomEmojiIndex];
@@ -98,7 +98,7 @@ function startCountdown() {
         clearInterval(countdownIntervalId);
         clearInterval(emojiIntervalId);
         isGameActive = false;
-        endGame(); // Show the modal instead of alert
+        endGame(); 
       }
     }, 1000);
   }
@@ -107,7 +107,7 @@ startButton.addEventListener("click", () => {
   if (isGameActive) return;
 
   score = 0;
-  // Get the time from the time select dropdown
+  
   timeRemaining = parseInt(timeSelect.value);
   scoreDisplay.textContent = score;
   timerDisplay.textContent = timeRemaining;
@@ -122,9 +122,9 @@ startButton.addEventListener("click", () => {
   startCountdown();
 });
 
-// Function to start the game logic
+
 function startGame() {
-    // Reset game state before starting
+    
     isGameActive = true;
     startEmojiLoop();
     startCountdown();
@@ -134,37 +134,39 @@ function startGame() {
     clearInterval(countdownIntervalId);
     clearInterval(emojiIntervalId);
     isGameActive = false;
-  
-    // Set the final score in the modal
+
     document.querySelector("#final-score").textContent = score;
   
-    // Show the game over modal
     const gameOverModal = document.getElementById("game-over-modal");
-    gameOverModal.classList.remove("hidden"); // Make the modal visible
+    gameOverModal.classList.remove("hidden");
+    gameOverModal.classList.add("show");
+}
+
   
-    saveHighScore();
-  }
   
   document.getElementById("restart-button").addEventListener("click", () => {
-    // Reset game state
+    
     score = 0;
-    timeRemaining = parseInt(timeSelect.value); // Reset to selected time
+    timeRemaining = parseInt(timeSelect.value); 
     scoreDisplay.textContent = score;
     timerDisplay.textContent = timeRemaining;
     activeTileId = null;
   
-    // Hide the game over modal and restart the game
-    document.getElementById("game-over-modal").classList.add("hidden");
+    
+    const gameOverModal = document.getElementById("game-over-modal");
+    gameOverModal.classList.remove("show");
+    gameOverModal.classList.add("hidden"); 
+  
     clearInterval(countdownIntervalId);
     clearInterval(emojiIntervalId);
     startGame();
-  });
-  
+});
+
 
 function saveHighScore() {
-  const highScore = localStorage.getItem("highScore") || 0;
-  if (score > highScore) {
-    localStorage.setItem("highScore", score);
-    alert("New High Score!");
-  }
+    const highScore = localStorage.getItem("highScore") || 0;
+    if (score > highScore) {
+        localStorage.setItem("highScore", score);
+        alert("New High Score!");
+    }
 }
