@@ -45,26 +45,25 @@ emojiModeInputs.forEach(input => {
 });
 
 function showRandomEmoji() {
-  // Clear all tiles
-  tiles.forEach(tile => {
-    tile.style.backgroundImage = "";
-  });
-
-  const randomTileIndex = Math.floor(Math.random() * tiles.length);
-  const selectedTile = tiles[randomTileIndex];
-
-  let emojiToUse = selectedEmoji;
-
-  if (emojiMode === "random") {
-    const randomEmojiIndex = Math.floor(Math.random() * emojiImages.length);
-    emojiToUse = emojiImages[randomEmojiIndex];
+    tiles.forEach(tile => tile.style.backgroundImage = ""); // Reset tiles
+    
+    const randomTileIndex = Math.floor(Math.random() * tiles.length);
+    const selectedTile = tiles[randomTileIndex];
+  
+    let emojiToUse = selectedEmoji;
+  
+    // If random mode is selected, choose a random emoji
+    if (emojiMode === "random") {
+      const randomEmojiIndex = Math.floor(Math.random() * emojiImages.length);
+      emojiToUse = emojiImages[randomEmojiIndex];
+    }
+  
+    selectedTile.style.backgroundImage = `url('${emojiToUse}')`;
+    selectedTile.style.backgroundSize = "cover";
+    selectedTile.style.backgroundPosition = "center";
+    activeTileId = selectedTile.id;
   }
-
-  selectedTile.style.backgroundImage = `url('${emojiToUse}')`;
-  selectedTile.style.backgroundSize = "cover";
-  selectedTile.style.backgroundPosition = "center";
-  activeTileId = selectedTile.id;
-}
+  
 
 tiles.forEach(tile => {
   tile.addEventListener("mousedown", () => {
@@ -113,3 +112,44 @@ startButton.addEventListener("click", () => {
   startEmojiLoop();
   startCountdown();
 });
+
+
+function showMultipleRandomEmojis() {
+    tiles.forEach(tile => tile.style.backgroundImage = ""); // Reset tiles
+    
+    // Choose multiple random tiles and emojis
+    let selectedTiles = [];
+    for (let i = 0; i < 3; i++) { // Example: 3 tiles
+      const randomTileIndex = Math.floor(Math.random() * tiles.length);
+      const selectedTile = tiles[randomTileIndex];
+  
+      if (!selectedTiles.includes(selectedTile)) {
+        selectedTiles.push(selectedTile);
+        let emojiToUse = emojiMode === "random" 
+                          ? emojiImages[Math.floor(Math.random() * emojiImages.length)] 
+                          : selectedEmoji;
+        selectedTile.style.backgroundImage = `url('${emojiToUse}')`;
+        selectedTile.style.backgroundSize = "cover";
+        selectedTile.style.backgroundPosition = "center";
+      }
+    }
+  }
+
+  
+  function endGame() {
+    clearInterval(countdownIntervalId);
+    clearInterval(emojiIntervalId);
+    isGameActive = false;
+    document.querySelector("#final-score").textContent = score;
+    document.getElementById("game-over-panel").classList.remove("hidden");
+  }
+  
+  document.getElementById("restart-button").addEventListener("click", () => {
+    score = 0;
+    timeRemaining = 60;
+    scoreDisplay.textContent = score;
+    timerDisplay.textContent = timeRemaining;
+    document.getElementById("game-over-panel").classList.add("hidden");
+    startGame();
+  });
+  
