@@ -1,200 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Emoji Catcher Game</title>
-    <link rel="stylesheet" href="style.css" />
-    <style>
-        /* Layout & Reset */
-body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #121212;
-  color: #ffffff;
-}
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emoji Catcher Game</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Your existing CSS styles here (unchanged) */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+    }
 
-.controls {
-  margin-bottom: 1.5rem;
-}
+    .controls {
+      margin-bottom: 1.5rem;
+    }
 
-#start-button {
-  padding: 12px 30px;
-  font-size: 18px;
-  background-color: #ffb51b;
-  color: #000;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
+    #start-button {
+      padding: 12px 30px;
+      font-size: 18px;
+      background-color: #ffb51b;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
 
-#start-button:hover {
-  background-color: #ffaa00;
-}
+    #start-button:hover {
+      background-color: #ffaa00;
+    }
 
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
 
-.game-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  min-height: 100vh;
-  box-sizing: border-box;
-}
+    .stats-panel {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
 
-/* Score & Time */
-.stats-panel {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
+    .score-box, .timer-box {
+      background: #1f1f1f;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      min-width: 150px;
+    }
 
-.score-box, .timer-box {
-  background: #1f1f1f;
-  border-radius: 8px;
-  padding: 20px;
-  text-align: center;
-  min-width: 150px;
-}
+    .score-box h2, .timer-box h2 {
+      margin: 0;
+    }
 
-.score-box h2, .timer-box h2 {
-  margin: 0;
-}
+    .board-container {
+      width: 100%;
+      max-width: 900px;
+    }
 
-/* Game Board */
-.board-container {
-  width: 100%;
-  max-width: 900px;
-}
+    .game-board {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+    }
 
-.game-board {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-}
+    .tile {
+      width: 160px;
+      height: 160px;
+      background-color: #2c2c2c;
+      border-radius: 12px;
+      transition: background 0.3s;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
 
-.tile {
-  width: 160px;
-  height: 160px;
-  background-color: #2c2c2c;
-  border-radius: 12px;
-  transition: background 0.3s;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
+    .active-emoji {
+      background-image: url("https://i.guim.co.uk/img/media/a1b7129c950433c9919f5670c92ef83aa1c682d9/55_344_1971_1183/master/1971.jpg?width=1200&height=900&quality=85&auto=format&fit=crop&s=88ba2531f114b9b58b9cb2d8e723abe1");
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+<body>
+  <main class="game-container">
+    <section class="stats-panel">
+      <div class="score-box">
+        <h2>Score:</h2>
+        <h2 id="score-display">0</h2>
+      </div>
+      <div class="timer-box">
+        <h2>Time Left:</h2>
+        <h2 id="timer-display">60</h2>
+      </div>
+    </section>
 
-.active-emoji {
-  background-image: url("https://i.guim.co.uk/img/media/a1b7129c950433c9919f5670c92ef83aa1c682d9/55_344_1971_1183/master/1971.jpg?width=1200&height=900&quality=85&auto=format&fit=crop&s=88ba2531f114b9b58b9cb2d8e723abe1");
-  background-size: cover;
-  background-position: center;
-}
+    <section class="controls">
+      <button id="start-button">Start Game</button>
+    </section>
 
-    </style>
-  </head>
-  <body>
-    <main class="game-container">
-      <section class="stats-panel">
-        <div class="score-box">
-          <h2>Score:</h2>
-          <h2 id="score-display">0</h2>
-        </div>
-        <div class="timer-box">
-          <h2>Time Left:</h2>
-          <h2 id="timer-display">60</h2>
-        </div>
-      </section>
+    <section class="board-container">
+      <div class="game-board">
+        <div class="tile" id="tile-1"></div>
+        <div class="tile" id="tile-2"></div>
+        <div class="tile" id="tile-3"></div>
+        <div class="tile" id="tile-4"></div>
+        <div class="tile" id="tile-5"></div>
+        <div class="tile" id="tile-6"></div>
+        <div class="tile" id="tile-7"></div>
+        <div class="tile" id="tile-8"></div>
+        <div class="tile" id="tile-9"></div>
+        <div class="tile" id="tile-10"></div>
+      </div>
+    </section>
+  </main>
 
-      <section class="controls">
-        <button id="start-button">Start Game</button>
-      </section>
+  <script>
+    const tiles = document.querySelectorAll(".tile");
+    const timerDisplay = document.querySelector("#timer-display");
+    const scoreDisplay = document.querySelector("#score-display");
+    const startButton = document.querySelector("#start-button");
 
-      <section class="board-container">
-        <div class="game-board">
-          <!-- 10 grid tiles -->
-          <div class="tile" id="tile-1"></div>
-          <div class="tile" id="tile-2"></div>
-          <div class="tile" id="tile-3"></div>
-          <div class="tile" id="tile-4"></div>
-          <div class="tile" id="tile-5"></div>
-          <div class="tile" id="tile-6"></div>
-          <div class="tile" id="tile-7"></div>
-          <div class="tile" id="tile-8"></div>
-          <div class="tile" id="tile-9"></div>
-          <div class="tile" id="tile-10"></div>
-        </div>
-      </section>
-    </main>
+    let score = 0;
+    let activeTileId;
+    let timeRemaining = 60;
+    let emojiIntervalId = null;
+    let countdownIntervalId = null;
+    let isGameActive = false;
 
-    <script src="script.js">
-     const tiles = document.querySelectorAll(".tile");
-const timerDisplay = document.querySelector("#timer-display");
-const scoreDisplay = document.querySelector("#score-display");
-const startButton = document.querySelector("#start-button");
+    function showRandomEmoji() {
+      tiles.forEach(tile => tile.classList.remove("active-emoji"));
+      const randomIndex = Math.floor(Math.random() * tiles.length);
+      const selectedTile = tiles[randomIndex];
+      selectedTile.classList.add("active-emoji");
+      activeTileId = selectedTile.id;
+    }
 
-let score = 0;
-let activeTileId;
-let timeRemaining = 60;
-let emojiIntervalId = null;
-let countdownIntervalId = null;
-let isGameActive = false;
+    tiles.forEach(tile => {
+      tile.addEventListener("mousedown", () => {
+        if (!isGameActive) return;
+        if (tile.id === activeTileId) {
+          score++;
+          scoreDisplay.textContent = score;
+          activeTileId = null;
+        }
+      });
+    });
 
-function showRandomEmoji() {
-  tiles.forEach(tile => tile.classList.remove("active-emoji"));
-  const randomIndex = Math.floor(Math.random() * tiles.length);
-  const selectedTile = tiles[randomIndex];
-  selectedTile.classList.add("active-emoji");
-  activeTileId = selectedTile.id;
-}
+    function startEmojiLoop() {
+      emojiIntervalId = setInterval(showRandomEmoji, 600);
+    }
 
-tiles.forEach(tile => {
-  tile.addEventListener("mousedown", () => {
-    if (!isGameActive) return;
-    if (tile.id === activeTileId) {
-      score++;
+    function startCountdown() {
+      countdownIntervalId = setInterval(() => {
+        timeRemaining--;
+        timerDisplay.textContent = timeRemaining;
+
+        if (timeRemaining === 0) {
+          clearInterval(countdownIntervalId);
+          clearInterval(emojiIntervalId);
+          isGameActive = false;
+          alert(`Game Over! Final Score: ${score}`);
+        }
+      }, 1000);
+    }
+
+    startButton.addEventListener("click", () => {
+      if (isGameActive) return;
+
+      score = 0;
+      timeRemaining = 60;
       scoreDisplay.textContent = score;
-      activeTileId = null;
-    }
-  });
-});
+      timerDisplay.textContent = timeRemaining;
+      isGameActive = true;
 
-function startEmojiLoop() {
-  emojiIntervalId = setInterval(showRandomEmoji, 600);
-}
-
-function startCountdown() {
-  countdownIntervalId = setInterval(() => {
-    timeRemaining--;
-    timerDisplay.textContent = timeRemaining;
-
-    if (timeRemaining === 0) {
-      clearInterval(countdownIntervalId);
-      clearInterval(emojiIntervalId);
-      isGameActive = false;
-      alert(`Game Over! Final Score: ${score}`);
-    }
-  }, 1000);
-}
-
-startButton.addEventListener("click", () => {
-  if (isGameActive) return;
-
-  // Reset game state
-  score = 0;
-  timeRemaining = 60;
-  scoreDisplay.textContent = score;
-  timerDisplay.textContent = timeRemaining;
-  isGameActive = true;
-
-  // Start game loops
-  startEmojiLoop();
-  startCountdown();
-});
-
-    </script>
-  </body>
+      startEmojiLoop();
+      startCountdown();
+    });
+  </script>
+</body>
 </html>
