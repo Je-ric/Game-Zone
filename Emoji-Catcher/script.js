@@ -3,10 +3,11 @@ const timerDisplay = document.querySelector("#timer-display");
 const scoreDisplay = document.querySelector("#score-display");
 const startButton = document.querySelector("#start-button");
 const emojiModeInputs = document.querySelectorAll("input[name='emojiMode']");
+const timeSelect = document.querySelector("#time-select");
 
 let score = 0;
 let activeTileId;
-let timeRemaining = 60;
+let timeRemaining = 60;  // Default time is 60 seconds
 let emojiIntervalId = null;
 let countdownIntervalId = null;
 let isGameActive = false;
@@ -38,10 +39,17 @@ const emojiImages = [
 let selectedEmoji = emojiImages[0];
 let emojiMode = "single";
 
+// Emoji Mode Listener
 emojiModeInputs.forEach(input => {
     input.addEventListener("change", (e) => {
         emojiMode = e.target.value;
     });
+});
+
+// Time Limit Selection
+timeSelect.addEventListener("change", (e) => {
+    timeRemaining = parseInt(e.target.value);
+    timerDisplay.textContent = timeRemaining; // Update the displayed time
 });
 
 function showRandomEmoji() {
@@ -98,7 +106,8 @@ startButton.addEventListener("click", () => {
   if (isGameActive) return;
 
   score = 0;
-  timeRemaining = 60;
+  // Get the time from the time select dropdown
+  timeRemaining = parseInt(timeSelect.value);
   scoreDisplay.textContent = score;
   timerDisplay.textContent = timeRemaining;
   isGameActive = true;
@@ -123,7 +132,7 @@ function endGame() {
 
 document.getElementById("restart-button").addEventListener("click", () => {
   score = 0;
-  timeRemaining = 60;
+  timeRemaining = parseInt(timeSelect.value); // Reset to selected time
   scoreDisplay.textContent = score;
   timerDisplay.textContent = timeRemaining;
   activeTileId = null;

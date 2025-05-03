@@ -31,8 +31,16 @@
     </section>
 
     <section class="controls">
-      <button id="start-button">Start Game</button>
-    </section>
+        <label for="time-select">Select Time:</label>
+        <select id="time-select">
+            <option value="10">10 Seconds</option>
+            <option value="30">30 Seconds</option>
+          <option value="60">60 Seconds</option>
+          <option value="90">90 Seconds</option>
+          <option value="120">120 Seconds</option>
+        </select>
+        <button id="start-button">Start Game</button>
+      </section>
 
     <section class="board-container">
       <div class="game-board">
@@ -50,10 +58,11 @@
     </section>
 
     <div id="game-over-panel" class="hidden">
-      <h2>Game Over!</h2>
-      <p>Final Score: <span id="final-score"></span></p>
-      <button id="restart-button">Restart</button>
+        <h2>Game Over!</h2>
+        <p>Final Score: <span id="final-score"></span></p>
+        <button id="restart-button">Restart</button>
     </div>
+    
   </main>
 
   <script src="script.js" defer></script>
