@@ -5,13 +5,13 @@ body, html {
     font-family: 'Segoe UI', sans-serif;
     background-color: #121212;
     color: #ffffff;
-  }
+}
 
-  .controls {
+.controls {
     margin-bottom: 1.5rem;
-  }
+}
 
-  #start-button {
+#start-button {
     padding: 12px 30px;
     font-size: 18px;
     background-color: #ffb51b;
@@ -20,112 +20,147 @@ body, html {
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s;
-  }
+}
 
-  #start-button:hover {
+#start-button:hover {
     background-color: #ffaa00;
-  }
+}
 
-  .game-container {
+.game-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
     min-height: 100vh;
     box-sizing: border-box;
-  }
+}
 
-  .stats-panel {
+.stats-panel {
     display: flex;
-    justify-content: center;
-    gap: 2rem;
+    justify-content: space-between;
+    gap: 1rem;
     margin-bottom: 2rem;
     background: linear-gradient(135deg, #ff7f00, #ff0033); /* New background gradient */
     border-radius: 15px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  }
+}
 
-  .score-box, .timer-box {
+.score-box, .timer-box {
     background: rgba(0, 0, 0, 0.6);
     border-radius: 8px;
     padding: 20px;
     text-align: center;
     min-width: 150px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-  }
+}
 
-  .score-box h2, .timer-box h2 {
+.score-box h2, .timer-box h2 {
     margin: 0;
-  }
+}
 
-  .board-container {
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.emoji-mode {
+    color: #fff;
+    font-size: 16px;
+}
+
+.emoji-mode label {
+    margin-right: 20px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.emoji-mode label:hover {
+    color: #ffb51b;
+}
+
+#time-select {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #2c2c2c;
+    color: #fff;
+    border: 1px solid #ffb51b;
+    border-radius: 8px;
+    width: 160px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#time-select:hover, #time-select:focus {
+    border-color: #ffaa00;
+    background-color: #444;
+    outline: none;
+}
+
+#time-select option {
+    background-color: #2c2c2c;
+    color: #fff;
+    padding: 10px;
+}
+
+#time-select option:hover {
+    background-color: #444;
+}
+
+.board-container {
     width: 100%;
     max-width: 900px;
-  }
+}
 
-  .game-board {
+.game-board {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 16px;
     margin-top: 30px;
-  }
+}
 
-  .tile {
+.tile {
     width: 160px;
     height: 160px;
     background-color: #2c2c2c;
     border-radius: 12px;
     transition: background 0.3s ease, transform 0.3s ease;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  }
+}
 
-  .tile:hover {
+.tile:hover {
     transform: scale(1.1);
     background-color: #444;
-  }
+}
 
-  .active-emoji {
+.active-emoji {
     background-image: url("https://i.guim.co.uk/img/media/a1b7129c950433c9919f5670c92ef83aa1c682d9/55_344_1971_1183/master/1971.jpg?width=1200&height=900&quality=85&auto=format&fit=crop&s=88ba2531f114b9b58b9cb2d8e723abe1");
     background-size: cover;
     background-position: center;
-  }
+}
 
-  .emoji-mode {
-    color: #fff;
-    margin-bottom: 1rem;
-    font-size: 16px;
-  }
-
-  .emoji-mode label {
-    margin-right: 20px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: color 0.3s ease;
-  }
-
-  .emoji-mode label:hover {
-    color: #ffb51b;
-  }
-
-  .hidden {
+.hidden {
     display: none;
-  }
-/* Game Over Modal Styles */
+}
+
 #game-over-modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(18, 18, 18, 0.9); /* darker overlay */
     display: flex;
     justify-content: center;
     align-items: center;
-    visibility: hidden; /* Hidden by default */
+    visibility: hidden;
     opacity: 0;
     transition: visibility 0s, opacity 0.3s ease;
+    z-index: 9999;
 }
 
 #game-over-modal.show {
@@ -134,41 +169,57 @@ body, html {
 }
 
 #game-over-modal .modal-content {
-    background-color: #fff;
-    padding: 20px;
+    background: linear-gradient(145deg, #1a2235, #0f141f);
+    padding: 40px 30px;
+    border-radius: 20px;
     text-align: center;
-    border-radius: 8px;
-    width: 300px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    color: #fff;
+    max-width: 360px;
+    width: 90%;
+    transform: scale(1);
+    animation: popIn 0.4s ease;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 #game-over-modal h2 {
-    color: black;
-    margin: 0;
-    font-size: 24px;
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #ffb51b;
 }
 
 #game-over-modal p {
-    color: black;
     font-size: 18px;
-    margin: 10px 0;
+    margin-bottom: 25px;
 }
 
 #game-over-modal button {
-    padding: 10px 20px;
+    background-color: #ff0033;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
 #game-over-modal button:hover {
-    background-color: #45a049;
+    background-color: #ff1a4d;
 }
 
-  
-  #restart-button {
+
+#restart-button {
     padding: 12px 30px;
     font-size: 18px;
     background-color: #ff0033;
@@ -177,24 +228,52 @@ body, html {
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s;
-  }
-  
-  #restart-button:hover {
-    background-color: #ff1a3d;
-  }
-  
+}
 
-  #restart-button {
-    padding: 12px 30px;
-    font-size: 18px;
-    background-color: #ff0033;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
+#restart-button:hover {
+    background-color: #ff1a3d;
+}
+
+/* Style for radio buttons */
+input[type="radio"] {
+    appearance: none; /* Remove default radio button */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #ffb51b;
+    background-color: transparent;
+    position: relative;
+    margin-right: 10px;
     cursor: pointer;
-    transition: background 0.3s;
-  }
+    transition: all 0.3s ease;
+}
 
-  #restart-button:hover {
-    background-color: #ff1a3d;
-  }
+input[type="radio"]:checked::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 10px;
+    height: 10px;
+    background-color: #ffb51b;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+input[type="radio"]:hover {
+    border-color: #ffaa00;
+}
+
+.emoji-mode label {
+    font-size: 18px;
+    color: #fff;
+    margin-right: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.emoji-mode label:hover {
+    color: #ffb51b;
+}

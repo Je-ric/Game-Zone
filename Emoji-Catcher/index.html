@@ -1,71 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Emoji Catcher Game</title>
-        <link rel="stylesheet" href="style.css" />
-    </head>
-    <body>
-        <main class="game-container">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emoji Catcher Game</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <main class="game-container">
         <section class="stats-panel">
             <div class="score-box">
-            <h2>Score:</h2>
-            <h2 id="score-display">0</h2>
+                <h2>Score:</h2>
+                <h2 id="score-display">0</h2>
             </div>
             <div class="timer-box">
-            <h2>Time Left:</h2>
-            <h2 id="timer-display">60</h2>
+                <h2>Time Left:</h2>
+                <h2 id="timer-display">60</h2>
             </div>
-            <div class="emoji-mode">
-            <label>
-                <input type="radio" name="emojiMode" value="single" checked />
-                Single Emoji
-            </label>
-            <label>
-                <input type="radio" name="emojiMode" value="random" />
-                Random Emoji
-            </label>
+            <div class="control-panel">
+                <div class="emoji-mode">
+                    <label>
+                        <input type="radio" name="emojiMode" value="single" checked />
+                        Single Emoji
+                    </label>
+                    <label>
+                        <input type="radio" name="emojiMode" value="random" />
+                        Random Emoji
+                    </label>
+                </div>
+                <div>
+                    <label for="time-select">Select Time:</label>
+                    <select id="time-select">
+                        <option value="10">10 Seconds</option>
+                        <option value="30">30 Seconds</option>
+                        <option value="60">60 Seconds</option>
+                        <option value="90">90 Seconds</option>
+                        <option value="120">120 Seconds</option>
+                    </select>
+                </div>
             </div>
         </section>
-
+    
         <section class="controls">
-            <label for="time-select">Select Time:</label>
-            <select id="time-select">
-            <option value="10">10 Seconds</option>
-            <option value="30">30 Seconds</option>
-            <option value="60">60 Seconds</option>
-            <option value="90">90 Seconds</option>
-            <option value="120">120 Seconds</option>
-            </select>
             <button id="start-button">Start Game</button>
         </section>
-
+    
         <section class="board-container">
             <div class="game-board">
-            <div class="tile" id="tile-1"></div>
-            <div class="tile" id="tile-2"></div>
-            <div class="tile" id="tile-3"></div>
-            <div class="tile" id="tile-4"></div>
-            <div class="tile" id="tile-5"></div>
-            <div class="tile" id="tile-6"></div>
-            <div class="tile" id="tile-7"></div>
-            <div class="tile" id="tile-8"></div>
-            <div class="tile" id="tile-9"></div>
-            <div class="tile" id="tile-10"></div>
+                <div class="tile" id="tile-1"></div>
+                <div class="tile" id="tile-2"></div>
+                <div class="tile" id="tile-3"></div>
+                <div class="tile" id="tile-4"></div>
+                <div class="tile" id="tile-5"></div>
+                <div class="tile" id="tile-6"></div>
+                <div class="tile" id="tile-7"></div>
+                <div class="tile" id="tile-8"></div>
+                <div class="tile" id="tile-9"></div>
+                <div class="tile" id="tile-10"></div>
             </div>
         </section>
-
+    
         <div id="game-over-modal" class="hidden">
             <div class="modal-content">
-            <h2>Game Over!</h2>
-            <p>Your final score is: <span id="final-score"></span></p>
-            <button id="restart-button">Restart Game</button>
+                <h2>Game Over!</h2>
+                <p>Your final score is: <span id="final-score"></span></p>
+                <button id="restart-button">Restart Game</button>
             </div>
         </div>
-        </main>
-
-        <script src="script.js" defer></script>
-    </body>
+    </main>
+    
+    <script src="script.js" defer></script>
+</body>
 </html>
