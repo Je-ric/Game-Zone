@@ -206,6 +206,15 @@
     </div>
   </div>
 
+  <div id="loseModal" class="hidden modal">
+    <div class="modal-content">
+      <h2>💥 Game Over!</h2>
+      <p>The correct number was <strong id="correctNumber"></strong>.</p>
+      <button onclick="resetGame()">Try Again</button>
+    </div>
+  </div>
+  
+
   <script>
     let randomNumber;
     let maxTries;
@@ -237,35 +246,40 @@
     }
 
     function checkGuess() {
-      const guess = parseInt(document.getElementById("userGuess").value);
+  var guess = parseInt(document.getElementById("userGuess").value);
 
-      if (isNaN(guess)) {
-        alert("Please enter a valid number.");
-        return;
-      }
+  if (isNaN(guess)) {
+    alert("Please enter a valid number.");
+    return;
+  }
 
-      guessCount++;
-      guesses.push(guess);
+  guessCount++;
+  guesses.push(guess);
 
-      if (guess === randomNumber) {
-        document.getElementById("feedback").innerText = "";
-        document.getElementById("guessList").innerText = "";
-        document.getElementById("winModal").classList.add("show");
-      } else if (guess < randomNumber) {
-        document.getElementById("feedback").innerText = "📉 Too low!";
-      } else {
-        document.getElementById("feedback").innerText = "📈 Too high!";
-      }
+  if (guess === randomNumber) {
+    document.getElementById("feedback").innerText = "";
+    document.getElementById("guessList").innerText = "";
+    document.getElementById("winModal").classList.remove("hidden");
+  } else if (guess < randomNumber) {
+    document.getElementById("feedback").innerText = "📉 Too low!";
+  } else {
+    document.getElementById("feedback").innerText = "📈 Too high!";
+  }
 
-      document.getElementById("guessList").innerText = "Your guesses: " + guesses.join(", ");
+  document.getElementById("guessList").innerText = "Your guesses: " + guesses.join(", ");
 
-      if (guessCount >= maxTries && guess !== randomNumber) {
-        document.getElementById("feedback").innerText = `💥 Game Over! The number was ${randomNumber}.`;
-        document.getElementById("gameArea").classList.add("hidden");
-      }
+  // Check if max attempts reached
+  if (guessCount >= maxTries && guess !== randomNumber) {
+    document.getElementById("feedback").innerText = "";
+    document.getElementById("gameArea").classList.add("hidden");
+    
+    // Show lose modal with the correct number
+    document.getElementById("correctNumber").innerText = randomNumber;
+    document.getElementById("loseModal").classList.remove("hidden");
+  }
 
-      document.getElementById("userGuess").value = '';
-    }
+  document.getElementById("userGuess").value = '';
+}
 
     function resetGame() {
       document.getElementById("winModal").classList.remove("show");
