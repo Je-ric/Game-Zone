@@ -284,13 +284,24 @@
 }
 
 
-    function resetGame() {
-      document.getElementById("winModal").classList.remove("show");
-      document.getElementById("gameArea").classList.add("hidden");
-      document.getElementById("userGuess").value = '';
-      // Optionally clear selections:
-      // document.querySelectorAll('input[type=radio]').forEach(el => el.checked = false);
-    }
+function resetGame() {
+  // Hide the modals
+  document.getElementById("winModal").classList.remove("show");
+  document.getElementById("loseModal").classList.remove("show");
+
+  // Hide the game area and reset input field
+  document.getElementById("gameArea").classList.add("hidden");
+  document.getElementById("userGuess").value = '';
+
+  // Optionally reset the radio selections (ranges and attempts)
+  document.querySelectorAll('input[type=radio]').forEach(el => el.checked = false);
+  
+  // Reset any other necessary game state (like guesses, feedback, etc.)
+  guesses = [];
+  document.getElementById("feedback").innerText = '';
+  document.getElementById("guessList").innerText = '';
+}
+
   </script>
 
 </body>
