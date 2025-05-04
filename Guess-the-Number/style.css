@@ -131,7 +131,8 @@ main {
     font-style: italic;
 }
 
-.submit-btn {
+.submit-btn,
+.modal button {
     background-color: var(--accent);
     color: black;
     font-weight: bold;
