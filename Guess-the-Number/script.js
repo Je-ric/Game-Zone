@@ -4,6 +4,18 @@ let maxRange;
 let guessCount;
 let guesses = [];
 
+const correctSound = new Audio('correct-sound.mp3');
+const wrongSound = new Audio('wrong-sound.mp3');
+
+if (guessCorrect) {
+    correctSound.play();
+} else {
+    wrongSound.play();
+}
+
+
+document.getElementById('guessesLeft').innerText = `Guesses Left: ${remainingGuesses}`;
+
 function startGame() {
     const rangeSelected = document.querySelector('input[name="range"]:checked');
     const attemptSelected = document.querySelector('input[name="attempt"]:checked');
