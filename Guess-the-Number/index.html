@@ -110,6 +110,36 @@
         align-items: center;
       }
     }
+
+    .modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: var(--primary);
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+
+.modal-content button {
+  margin-top: 1rem;
+  background-color: var(--accent);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
   </style>
 </head>
 <body>
@@ -139,6 +169,15 @@
       </div>
     </div>
   </main>
+  
+  <div id="winModal" class="hidden modal">
+    <div class="modal-content">
+      <h2>🎉 You got it!</h2>
+      <p>Great job guessing the number.</p>
+      <button onclick="resetGame()">Play Again</button>
+    </div>
+  </div>
+  
 
   <script>
     var randomNumber;
@@ -171,34 +210,44 @@
     }
 
     function checkGuess() {
-      var guess = parseInt(document.getElementById("userGuess").value);
+  var guess = parseInt(document.getElementById("userGuess").value);
 
-      if (isNaN(guess)) {
-        alert("Please enter a valid number.");
-        return;
-      }
+  if (isNaN(guess)) {
+    alert("Please enter a valid number.");
+    return;
+  }
 
-      guessCount++;
-      guesses.push(guess);
+  guessCount++;
+  guesses.push(guess);
 
-      if (guess === randomNumber) {
-        document.getElementById("feedback").innerText = "🎉 Correct! You guessed it!";
-        document.getElementById("gameArea").classList.add("hidden");
-      } else if (guess < randomNumber) {
-        document.getElementById("feedback").innerText = "📉 Too low!";
-      } else {
-        document.getElementById("feedback").innerText = "📈 Too high!";
-      }
+  if (guess === randomNumber) {
+    document.getElementById("feedback").innerText = "";
+    document.getElementById("guessList").innerText = "";
+    document.getElementById("winModal").classList.remove("hidden");
+  } else if (guess < randomNumber) {
+    document.getElementById("feedback").innerText = "📉 Too low!";
+  } else {
+    document.getElementById("feedback").innerText = "📈 Too high!";
+  }
 
-      document.getElementById("guessList").innerText = "Your guesses: " + guesses.join(", ");
+  document.getElementById("guessList").innerText = "Your guesses: " + guesses.join(", ");
 
-      if (guessCount >= maxTries && guess !== randomNumber) {
-        document.getElementById("feedback").innerText = `💥 Game Over! The number was ${randomNumber}.`;
-        document.getElementById("gameArea").classList.add("hidden");
-      }
+  if (guessCount >= maxTries && guess !== randomNumber) {
+    document.getElementById("feedback").innerText = `💥 Game Over! The number was ${randomNumber}.`;
+    document.getElementById("gameArea").classList.add("hidden");
+  }
 
-      document.getElementById("userGuess").value = '';
-    }
+  document.getElementById("userGuess").value = '';
+}
+
+
+function resetGame() {
+  document.getElementById("winModal").classList.add("hidden");
+  document.getElementById("gameArea").classList.add("hidden");
+  document.getElementById("attempts").value = "";
+  document.getElementById("userGuess").value = "";
+}
+
   </script>
 
 </body>
