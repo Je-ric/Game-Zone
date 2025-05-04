@@ -92,9 +92,29 @@
     }
 
     .game-card input[type="number"] {
-      width: 100%;
-      margin-top: 1rem;
-    }
+  width: 100%;
+  margin-top: 1rem;
+  padding: 12px;
+  font-size: 18px;
+  color: var(--text);
+  background-color: #1b4b4d;
+  border: 2px solid #3dcf77;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.game-card input[type="number"]:focus {
+  border-color: #2daf66;
+  background-color: #143434;
+  outline: none;
+}
+
+.game-card input[type="number"]::placeholder {
+  color: var(--muted);
+  font-style: italic;
+}
+
 
     .feedback {
       margin-top: 1.2rem;
