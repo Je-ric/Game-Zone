@@ -4,17 +4,8 @@ let maxRange;
 let guessCount;
 let guesses = [];
 
-const correctSound = new Audio('correct-sound.mp3');
-const wrongSound = new Audio('wrong-sound.mp3');
-
-if (guessCorrect) {
-    correctSound.play();
-} else {
-    wrongSound.play();
-}
-
-
-document.getElementById('guessesLeft').innerText = `Guesses Left: ${remainingGuesses}`;
+const correctSound = new Audio('audio/Win.mp3');
+const wrongSound = new Audio('audio/Lose.mp3');
 
 function startGame() {
     const rangeSelected = document.querySelector('input[name="range"]:checked');
@@ -50,28 +41,35 @@ function checkGuess() {
     guessCount++;
     guesses.push(guess);
 
+    // Update guesses left
+    const remainingGuesses = maxTries - guessCount;
+    document.getElementById("guessesLeft").innerText = `Guesses Left: ${remainingGuesses}`;
+
     if (guess === randomNumber) {
         document.getElementById("feedback").innerText = "";
         document.getElementById("guessList").innerText = "";
         document.getElementById("winModal").classList.remove("hidden");
         document.getElementById("winModal").classList.add("show"); 
+        correctSound.play(); // Play correct sound
     } else if (guess < randomNumber) {
         document.getElementById("feedback").innerText = "📉 Too low!";
+        wrongSound.play(); // Play wrong sound
     } else {
         document.getElementById("feedback").innerText = "📈 Too high!";
+        wrongSound.play(); // Play wrong sound
     }
 
     document.getElementById("guessList").innerText = "Your guesses: " + guesses.join(", ");
 
-    
     if (guessCount >= maxTries && guess !== randomNumber) {
         document.getElementById("feedback").innerText = "";
         document.getElementById("gameArea").classList.add("hidden");
 
-        
         document.getElementById("correctNumber").innerText = randomNumber;
         document.getElementById("loseModal").classList.remove("hidden"); 
         document.getElementById("loseModal").classList.add("show");
+
+        wrongSound.play(); // Play wrong sound when the game ends
     }
 
     document.getElementById("userGuess").value = '';
