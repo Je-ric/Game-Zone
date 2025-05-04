@@ -9,56 +9,58 @@
 <body>
 
     <header class="header">
-        <div class="group-1">
-        <p>Choose Number Range:</p>
-        <div class="radio-group">
-            <label><input type="radio" name="range" value="10">1–10</label>
-            <label><input type="radio" name="range" value="30">1–30</label>
-            <label><input type="radio" name="range" value="50">10–50</label>
-            <label><input type="radio" name="range" value="100">1–100</label>
-        </div>
-        </div>
+        <h1>Guess the Number</h1>
+        <div class="settings">
+            <div class="group">
+                <p>Choose Number Range:</p>
+                <div class="radio-group">
+                    <label><input type="radio" name="range" value="10">1–10</label>
+                    <label><input type="radio" name="range" value="30">1–30</label>
+                    <label><input type="radio" name="range" value="50">10–50</label>
+                    <label><input type="radio" name="range" value="100">1–100</label>
+                </div>
+            </div>
 
-        <div class="group-2">
-        <p>Choose Number of Guesses:</p>
-        <div class="radio-group">
-            <label><input type="radio" name="attempt" value="3">3 guesses</label>
-            <label><input type="radio" name="attempt" value="5">5 guesses</label>
-            <label><input type="radio" name="attempt" value="7">7 guesses</label>
-            <label><input type="radio" name="attempt" value="10">10 guesses</label>
+            <div class="group">
+                <p>Choose Number of Guesses:</p>
+                <div class="radio-group">
+                    <label><input type="radio" name="attempt" value="3">3 guesses</label>
+                    <label><input type="radio" name="attempt" value="5">5 guesses</label>
+                    <label><input type="radio" name="attempt" value="7">7 guesses</label>
+                    <label><input type="radio" name="attempt" value="10">10 guesses</label>
+                </div>
+            </div>
         </div>
-        </div>
-
         <button class="start-btn" onclick="startGame()">Start Game</button>
     </header>
 
     <main>
         <div class="game-card">
-        <h1>Guess the Number</h1>
-
-        <div id="gameArea" class="hidden">
-            <input type="number" id="userGuess" placeholder="Enter your guess">
-            <button onclick="checkGuess()">Submit</button>
-
-            <div class="feedback" id="feedback"></div>
-            <div class="guess-list" id="guessList"></div>
-        </div>
+            <h2>Guess the Number</h2>
+            <div id="gameArea" class="hidden">
+                <input type="number" id="userGuess" placeholder="Enter your guess" onkeydown="checkEnter(event)">
+                <button onclick="checkGuess()" class="submit-btn">Submit Guess</button>
+                <div class="feedback" id="feedback"></div>
+                <div class="guess-list" id="guessList"></div>
+            </div>
         </div>
     </main>
 
+    <!-- Win Modal -->
     <div id="winModal" class="modal">
         <div class="modal-content">
-        <h2>🎉 You got it!</h2>
-        <p>Great job guessing the number.</p>
-        <button onclick="resetGame()">Play Again</button>
+            <h2>🎉 You got it!</h2>
+            <p>Great job guessing the number.</p>
+            <button onclick="resetGame()">Play Again</button>
         </div>
     </div>
 
+    <!-- Lose Modal -->
     <div id="loseModal" class="modal hidden">
         <div class="modal-content">
-        <h2>💥 Game Over!</h2>
-        <p>The correct number was <strong id="correctNumber"></strong>.</p>
-        <button onclick="resetGame()">Try Again</button>
+            <h2>💥 Game Over!</h2>
+            <p>The correct number was <strong id="correctNumber"></strong>.</p>
+            <button onclick="resetGame()">Try Again</button>
         </div>
     </div>
 
