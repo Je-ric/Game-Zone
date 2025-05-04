@@ -206,7 +206,7 @@
     </div>
   </div>
 
-  <div id="loseModal" class="hidden modal">
+<div id="loseModal" class="modal hidden">
     <div class="modal-content">
       <h2>💥 Game Over!</h2>
       <p>The correct number was <strong id="correctNumber"></strong>.</p>
@@ -260,6 +260,7 @@
     document.getElementById("feedback").innerText = "";
     document.getElementById("guessList").innerText = "";
     document.getElementById("winModal").classList.remove("hidden");
+    document.getElementById("winModal").classList.add("show"); // Show win modal
   } else if (guess < randomNumber) {
     document.getElementById("feedback").innerText = "📉 Too low!";
   } else {
@@ -275,11 +276,13 @@
     
     // Show lose modal with the correct number
     document.getElementById("correctNumber").innerText = randomNumber;
-    document.getElementById("loseModal").classList.remove("hidden");
+    document.getElementById("loseModal").classList.remove("hidden"); // Ensure lose modal is shown
+    document.getElementById("loseModal").classList.add("show");
   }
 
   document.getElementById("userGuess").value = '';
 }
+
 
     function resetGame() {
       document.getElementById("winModal").classList.remove("show");
