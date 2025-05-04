@@ -10,38 +10,40 @@
 
     <header class="header">
         <h1>Guess the Number</h1>
-        <div class="settings">
-            <div class="group">
-                <p>Choose Number Range:</p>
-                <div class="radio-group">
-                    <label><input type="radio" name="range" value="10">1–10</label>
-                    <label><input type="radio" name="range" value="30">1–30</label>
-                    <label><input type="radio" name="range" value="50">10–50</label>
-                    <label><input type="radio" name="range" value="100">1–100</label>
-                </div>
-            </div>
-
-            <div class="group">
-                <p>Choose Number of Guesses:</p>
-                <div class="radio-group">
-                    <label><input type="radio" name="attempt" value="3">3 guesses</label>
-                    <label><input type="radio" name="attempt" value="5">5 guesses</label>
-                    <label><input type="radio" name="attempt" value="7">7 guesses</label>
-                    <label><input type="radio" name="attempt" value="10">10 guesses</label>
-                </div>
-            </div>
-        </div>
         <button class="start-btn" onclick="startGame()">Start Game</button>
     </header>
 
     <main>
-        <div class="game-card">
-            <h2>Guess the Number</h2>
-            <div id="gameArea" class="hidden">
-                <input type="number" id="userGuess" placeholder="Enter your guess" onkeydown="checkEnter(event)">
-                <button onclick="checkGuess()" class="submit-btn">Submit Guess</button>
-                <div class="feedback" id="feedback"></div>
-                <div class="guess-list" id="guessList"></div>
+        <div class="game-container">
+            <div class="settings">
+                <div class="group">
+                    <p>Choose Number Range:</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="range" value="10">1–10</label>
+                        <label><input type="radio" name="range" value="30">1–30</label>
+                        <label><input type="radio" name="range" value="50">10–50</label>
+                        <label><input type="radio" name="range" value="100">1–100</label>
+                    </div>
+                </div>
+
+                <div class="group">
+                    <p>Choose Number of Guesses:</p>
+                    <div class="radio-group">
+                        <label><input type="radio" name="attempt" value="3">3 guesses</label>
+                        <label><input type="radio" name="attempt" value="5">5 guesses</label>
+                        <label><input type="radio" name="attempt" value="7">7 guesses</label>
+                        <label><input type="radio" name="attempt" value="10">10 guesses</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-card">
+                <div id="gameArea" class="hidden">
+                    <input type="number" id="userGuess" placeholder="Enter your guess" onkeydown="checkEnter(event)">
+                    <button onclick="checkGuess()" class="submit-btn">Submit Guess</button>
+                    <div class="feedback" id="feedback"></div>
+                    <div class="guess-list" id="guessList"></div>
+                </div>
             </div>
         </div>
     </main>
