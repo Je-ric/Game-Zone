@@ -50,7 +50,7 @@ function checkGuess() {
         document.getElementById("winModal").classList.remove("hidden");
         document.getElementById("winModal").classList.add("show");
 
-        correctSound.play(); // ✅ Only play sound when modal shows
+        correctSound.play(); 
     } else if (guessCount >= maxTries) {
         document.getElementById("feedback").innerText = "";
         document.getElementById("gameArea").classList.add("hidden");
@@ -59,7 +59,7 @@ function checkGuess() {
         document.getElementById("loseModal").classList.remove("hidden");
         document.getElementById("loseModal").classList.add("show");
 
-        wrongSound.play(); // ✅ Only play sound when modal shows
+        wrongSound.play(); 
     } else if (guess < randomNumber) {
         document.getElementById("feedback").innerText = "📉 Too low!";
     } else {
