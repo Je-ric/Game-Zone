@@ -31,34 +31,38 @@
       padding: 1rem;
       display: flex;
       flex-direction: column;
+      gap: 1rem;
       align-items: center;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
     }
 
     .radio-group {
       display: flex;
-      flex-wrap: wrap;
       gap: 1rem;
-      margin-bottom: 1rem;
+      flex-wrap: wrap;
       justify-content: center;
     }
 
-    label {
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #143434;
+      padding: 8px 12px;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    input[type="radio"] {
+    .radio-group input[type="radio"] {
       accent-color: var(--accent);
-      margin-right: 5px;
     }
 
     button {
-      padding: 10px 20px;
-      border-radius: 8px;
       background-color: var(--accent);
       color: black;
       font-weight: bold;
-      font-size: 16px;
+      padding: 10px 20px;
+      border-radius: 8px;
       border: none;
       cursor: pointer;
       transition: background 0.3s;
@@ -90,12 +94,6 @@
     .game-card input[type="number"] {
       width: 100%;
       margin-top: 1rem;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
-      background-color: #143434;
-      color: var(--text);
     }
 
     .feedback {
@@ -110,20 +108,11 @@
     }
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
     h1 {
       color: var(--accent);
-    }
-
-    @media (max-width: 480px) {
-      header {
-        align-items: center;
-      }
-      .radio-group {
-        flex-direction: column;
-      }
     }
 
     .modal {
@@ -131,10 +120,14 @@
       top: 0; left: 0;
       width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.7);
-      display: flex;
+      display: none;
       justify-content: center;
       align-items: center;
       z-index: 999;
+    }
+
+    .modal.show {
+      display: flex;
     }
 
     .modal-content {
@@ -147,7 +140,6 @@
 
     .modal-content button {
       margin-top: 1rem;
-      background-color: var(--accent);
     }
 
   </style>
@@ -155,15 +147,18 @@
 <body>
 
   <header>
-    <div class="radio-group" id="rangeRadios">
-      <label><input type="radio" name="range" value="10">1 - 10</label>
-      <label><input type="radio" name="range" value="30">1 - 30</label>
-      <label><input type="radio" name="range" value="50">10 - 50</label>
-      <label><input type="radio" name="range" value="100">1 - 100</label>
+    <div class="radio-group">
+      <label><input type="radio" name="range" value="10">1–10</label>
+      <label><input type="radio" name="range" value="30">1–30</label>
+      <label><input type="radio" name="range" value="50">10–50</label>
+      <label><input type="radio" name="range" value="100">1–100</label>
     </div>
 
-    <div class="radio-group" id="guessRadios">
-      <!-- dynamically filled -->
+    <div class="radio-group">
+      <label><input type="radio" name="attempt" value="3">3 guesses</label>
+      <label><input type="radio" name="attempt" value="5">5 guesses</label>
+      <label><input type="radio" name="attempt" value="7">7 guesses</label>
+      <label><input type="radio" name="attempt" value="10">10 guesses</label>
     </div>
 
     <button onclick="startGame()">Start Game</button>
@@ -183,7 +178,7 @@
     </div>
   </main>
 
-  <div id="winModal" class="hidden modal">
+  <div id="winModal" class="modal">
     <div class="modal-content">
       <h2>🎉 You got it!</h2>
       <p>Great job guessing the number.</p>
@@ -195,35 +190,21 @@
     let randomNumber;
     let maxTries;
     let maxRange;
-    let guessCount = 0;
+    let guessCount;
     let guesses = [];
 
-    const guessRadios = document.getElementById("guessRadios");
-
-    document.getElementById("rangeRadios").addEventListener("change", function(e) {
-      const val = parseInt(e.target.value);
-      maxRange = val;
-
-      // Suggested attempt options based on range
-      let tries;
-      if (val === 10) tries = [3, 4, 5];
-      else if (val === 30) tries = [5, 6, 7];
-      else if (val === 50) tries = [6, 8, 10];
-      else tries = [7, 9, 12];
-
-      guessRadios.innerHTML = tries.map(tryCount =>
-        `<label><input type="radio" name="tries" value="${tryCount}">${tryCount} guesses</label>`
-      ).join('');
-    });
-
     function startGame() {
-      const triesRadio = document.querySelector('input[name="tries"]:checked');
-      if (!maxRange || !triesRadio) {
-        alert("Please select a range and number of guesses.");
+      const rangeSelected = document.querySelector('input[name="range"]:checked');
+      const attemptSelected = document.querySelector('input[name="attempt"]:checked');
+
+      if (!rangeSelected || !attemptSelected) {
+        alert("Select both range and guesses.");
         return;
       }
 
-      maxTries = parseInt(triesRadio.value);
+      maxRange = parseInt(rangeSelected.value);
+      maxTries = parseInt(attemptSelected.value);
+
       randomNumber = Math.floor(Math.random() * maxRange) + 1;
       guessCount = 0;
       guesses = [];
@@ -232,7 +213,7 @@
       document.getElementById("guessList").innerText = '';
       document.getElementById("gameArea").classList.remove("hidden");
 
-      console.log("Secret number:", randomNumber); // for debug
+      console.log("Secret number:", randomNumber);
     }
 
     function checkGuess() {
@@ -249,7 +230,7 @@
       if (guess === randomNumber) {
         document.getElementById("feedback").innerText = "";
         document.getElementById("guessList").innerText = "";
-        document.getElementById("winModal").classList.remove("hidden");
+        document.getElementById("winModal").classList.add("show");
       } else if (guess < randomNumber) {
         document.getElementById("feedback").innerText = "📉 Too low!";
       } else {
@@ -267,10 +248,11 @@
     }
 
     function resetGame() {
-      document.getElementById("winModal").classList.add("hidden");
+      document.getElementById("winModal").classList.remove("show");
       document.getElementById("gameArea").classList.add("hidden");
-      document.getElementById("userGuess").value = "";
-      guessRadios.innerHTML = "";
+      document.getElementById("userGuess").value = '';
+      // Optionally clear selections:
+      // document.querySelectorAll('input[type=radio]').forEach(el => el.checked = false);
     }
   </script>
 
