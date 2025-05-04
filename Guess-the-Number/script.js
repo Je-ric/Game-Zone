@@ -41,7 +41,6 @@ function checkGuess() {
     guessCount++;
     guesses.push(guess);
 
-    // Update guesses left
     const remainingGuesses = maxTries - guessCount;
     document.getElementById("guessesLeft").innerText = `Guesses Left: ${remainingGuesses}`;
 
@@ -49,31 +48,28 @@ function checkGuess() {
         document.getElementById("feedback").innerText = "";
         document.getElementById("guessList").innerText = "";
         document.getElementById("winModal").classList.remove("hidden");
-        document.getElementById("winModal").classList.add("show"); 
-        correctSound.play(); // Play correct sound
+        document.getElementById("winModal").classList.add("show");
+
+        correctSound.play(); // ✅ Only play sound when modal shows
+    } else if (guessCount >= maxTries) {
+        document.getElementById("feedback").innerText = "";
+        document.getElementById("gameArea").classList.add("hidden");
+        document.getElementById("correctNumber").innerText = randomNumber;
+
+        document.getElementById("loseModal").classList.remove("hidden");
+        document.getElementById("loseModal").classList.add("show");
+
+        wrongSound.play(); // ✅ Only play sound when modal shows
     } else if (guess < randomNumber) {
         document.getElementById("feedback").innerText = "📉 Too low!";
-        wrongSound.play(); // Play wrong sound
     } else {
         document.getElementById("feedback").innerText = "📈 Too high!";
-        wrongSound.play(); // Play wrong sound
     }
 
     document.getElementById("guessList").innerText = "Your guesses: " + guesses.join(", ");
-
-    if (guessCount >= maxTries && guess !== randomNumber) {
-        document.getElementById("feedback").innerText = "";
-        document.getElementById("gameArea").classList.add("hidden");
-
-        document.getElementById("correctNumber").innerText = randomNumber;
-        document.getElementById("loseModal").classList.remove("hidden"); 
-        document.getElementById("loseModal").classList.add("show");
-
-        wrongSound.play(); // Play wrong sound when the game ends
-    }
-
     document.getElementById("userGuess").value = '';
 }
+
 
 function checkEnter(event) {
     if (event.key === "Enter") {
