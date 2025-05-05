@@ -7,7 +7,26 @@
     body {
       font-family: sans-serif;
       text-align: center;
-      background-color: #e2e8f0;
+      background-color: #f0f4f8;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 2rem;
+      color: #333;
+    }
+
+    #status {
+      font-size: 18px;
+      margin-bottom: 20px;
     }
 
     #game {
@@ -15,12 +34,11 @@
       grid-template-columns: repeat(7, 60px);
       grid-template-rows: repeat(6, 60px);
       gap: 5px;
-      justify-content: center;
-      margin: 20px auto;
+      margin: 20px;
       padding: 10px;
       background-color: #1a2235;
       border-radius: 15px;
-      box-shadow: 0 0 10px #333;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     }
 
     .cell {
@@ -50,16 +68,24 @@
       box-shadow: 0 0 10px #00ffae;
     }
 
-    #status {
-      font-size: 18px;
-      margin-bottom: 10px;
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 20px;
     }
 
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 10px;
-      cursor: pointer;
+    button:hover {
+      background-color: #45a049;
+    }
+
+    button:active {
+      background-color: #388e3c;
     }
   </style>
 </head>
