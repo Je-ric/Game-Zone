@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Connect Four (Simplified)</title>
+  <title>Connect Four (Highlighted)</title>
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
-      background-color: #f4f4f4;
+      background-color: #e2e8f0;
     }
 
     #game {
@@ -17,6 +17,10 @@
       gap: 5px;
       justify-content: center;
       margin: 20px auto;
+      padding: 10px;
+      background-color: #1a2235;
+      border-radius: 15px;
+      box-shadow: 0 0 10px #333;
     }
 
     .cell {
@@ -26,6 +30,11 @@
       border-radius: 50%;
       border: 2px solid #333;
       cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .cell:hover {
+      transform: scale(1.05);
     }
 
     .red {
@@ -34,6 +43,11 @@
 
     .yellow {
       background-color: yellow;
+    }
+
+    .winner {
+      outline: 4px solid #00ffae;
+      box-shadow: 0 0 10px #00ffae;
     }
 
     #status {
@@ -45,6 +59,7 @@
       padding: 10px 20px;
       font-size: 16px;
       margin-top: 10px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -59,7 +74,7 @@
     const ROWS = 6;
     const COLUMNS = 7;
     let currentPlayer = 'red';
-    let board = []; // This will be a 2D array [row][col]
+    let board = [];
     let gameOver = false;
 
     const gameElement = document.getElementById('game');
@@ -72,7 +87,6 @@
       currentPlayer = 'red';
       statusElement.textContent = "Player Red's Turn";
 
-      // Create 6 rows and 7 columns
       for (let row = 0; row < ROWS; row++) {
         board[row] = [];
         for (let col = 0; col < COLUMNS; col++) {
@@ -81,7 +95,7 @@
           cell.dataset.row = row;
           cell.dataset.col = col;
           gameElement.appendChild(cell);
-          board[row][col] = ''; // empty at start
+          board[row][col] = '';
         }
       }
     }
@@ -92,7 +106,6 @@
       const col = parseInt(event.target.dataset.col);
       let placedRow = -1;
 
-      // Find the lowest empty row in that column
       for (let row = ROWS - 1; row >= 0; row--) {
         if (board[row][col] === '') {
           board[row][col] = currentPlayer;
@@ -101,46 +114,50 @@
         }
       }
 
-      if (placedRow === -1) return; // Column full
+      if (placedRow === -1) return;
 
       const cell = document.querySelector(`.cell[data-row="${placedRow}"][data-col="${col}"]`);
       cell.classList.add(currentPlayer);
 
-      if (checkWinner(placedRow, col)) {
-        statusElement.textContent = `Player ${capitalize(currentPlayer)} Wins!`;
+      const winCells = checkWinner(placedRow, col);
+      if (winCells) {
+        winCells.forEach(([r, c]) => {
+          const winCell = document.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
+          winCell.classList.add('winner');
+        });
+        statusElement.textContent = `🎉 Player ${capitalize(currentPlayer)} Wins!`;
         gameOver = true;
         return;
       }
 
-      // Switch player
       currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
       statusElement.textContent = `Player ${capitalize(currentPlayer)}'s Turn`;
     });
 
     function checkWinner(row, col) {
       const directions = [
-        { r: 0, c: 1 },   // horizontal
-        { r: 1, c: 0 },   // vertical
-        { r: 1, c: 1 },   // diagonal down-right
-        { r: 1, c: -1 }   // diagonal down-left
+        { r: 0, c: 1 },
+        { r: 1, c: 0 },
+        { r: 1, c: 1 },
+        { r: 1, c: -1 }
       ];
 
       for (let dir of directions) {
-        let count = 1;
+        const line = [[row, col]];
 
-        // Check one direction
-        count += countInDirection(row, col, dir.r, dir.c);
-        // Check opposite direction
-        count += countInDirection(row, col, -dir.r, -dir.c);
+        line.push(...collectLine(row, col, dir.r, dir.c));
+        line.push(...collectLine(row, col, -dir.r, -dir.c));
 
-        if (count >= 4) return true;
+        if (line.length >= 4) {
+          return line;
+        }
       }
 
-      return false;
+      return null;
     }
 
-    function countInDirection(row, col, rowStep, colStep) {
-      let count = 0;
+    function collectLine(row, col, rowStep, colStep) {
+      const cells = [];
       let r = row + rowStep;
       let c = col + colStep;
 
@@ -149,19 +166,19 @@
         c >= 0 && c < COLUMNS &&
         board[r][c] === currentPlayer
       ) {
-        count++;
+        cells.push([r, c]);
         r += rowStep;
         c += colStep;
       }
 
-      return count;
+      return cells;
     }
 
     function capitalize(word) {
       return word[0].toUpperCase() + word.slice(1);
     }
 
-    startGame(); // Start when loaded
+    startGame();
   </script>
 </body>
 </html>
