@@ -35,3 +35,11 @@ Unscramble the given word before the timer runs out using the hint provided.
 - If time expires, the correct answer is shown, and a new word is loaded.
 
 ---
+
+## 🔧 Technologies Used
+
+- **HTML5**
+- **CSS3**
+- **JavaScript (Vanilla)**
+
+---

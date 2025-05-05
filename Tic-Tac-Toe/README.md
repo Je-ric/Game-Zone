@@ -35,5 +35,3 @@ Click the **“Reset”** button to clear the board and play again.
 
 ---
 
-## 📂 Project Structure
-

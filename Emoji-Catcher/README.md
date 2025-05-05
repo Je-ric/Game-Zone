@@ -43,7 +43,7 @@ Emoji Catcher is a fast-paced browser game where you tap the right emoji as quic
 
 - **HTML5**
 - **CSS3**
-- **Vanilla JavaScript (ES6)**
+- **JavaScript (Vanilla)**
 
 ---
 

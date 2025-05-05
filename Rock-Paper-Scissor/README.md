@@ -26,10 +26,10 @@ This is a simple web-based Rock Paper Scissors game built using HTML, CSS (with 
 4. **See the Results**: The game will show the winner and update the score.
 5. **Reset**: You can reset the game anytime by clicking the "Reset Game" button.
 
-## Installation
+## 🔧 Technologies Used
 
-To run this game locally, follow these steps:
+- **HTML5**
+- **CSS3 (Tailwind)**
+- **JavaScript (Vanilla)**
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/rock-paper-scissors.git
+---
