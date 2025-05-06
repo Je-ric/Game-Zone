@@ -2,13 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Simple Tic Tac Toe</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Tic Tac Toe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="game-container">
+    <h1 class="game-title">Tic Tac Toe</h1>
+    
+    <div class="score-board">
+      <div class="score-card x">
+        <h3>Player X</h3>
+        <div id="scoreX" class="score-value">0</div>
+      </div>
+      <div class="score-card o">
+        <h3>Player O</h3>
+        <div id="scoreO" class="score-value">0</div>
+      </div>
+    </div>
+    
+    <div id="turnIndicator" class="turn-indicator x">
+      Current turn: <span>X</span>
+    </div>
+    
     <div class="game-board" id="gameBoard"></div>
-    <button id="resetButton">Reset Game</button>
+    
+    <div class="buttons">
+      <button id="resetButton">New Game</button>
+      <button id="resetScoreButton">Reset Score</button>
+    </div>
   </div>
+  
+<script src="script.js"></script>
 </body>
 </html>
