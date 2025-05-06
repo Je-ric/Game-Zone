@@ -120,3 +120,11 @@ button:active {
   margin: 5px 0 0;
   font-size: 1.2rem;
 }
+
+.game-container{
+  display: flex; 
+  justify-content: space-around; 
+  align-items: center; 
+  gap: 50px; 
+  margin-bottom: 20px;
+}
