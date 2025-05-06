@@ -4,6 +4,8 @@ const gameBoard = document.getElementById('gameBoard');
     const turnIndicator = document.getElementById('turnIndicator');
     const scoreX = document.getElementById('scoreX');
     const scoreO = document.getElementById('scoreO');
+    const playerXIndicator = document.getElementById('playerXIndicator');
+    const playerOIndicator = document.getElementById('playerOIndicator');
     
     let board = Array(9).fill(null);
     let isXTurn = true;
@@ -40,6 +42,19 @@ const gameBoard = document.getElementById('gameBoard');
     function updateTurnIndicator() {
         turnIndicator.className = isXTurn ? 'turn-indicator x' : 'turn-indicator o';
         turnIndicator.innerHTML = `Current turn: <span>${isXTurn ? 'X' : 'O'}</span>`;
+        
+        // Update player indicators
+        if (isXTurn) {
+            playerXIndicator.classList.add('active');
+            playerXIndicator.textContent = 'Current Turn';
+            playerOIndicator.classList.remove('active');
+            playerOIndicator.textContent = 'Waiting...';
+        } else {
+            playerOIndicator.classList.add('active');
+            playerOIndicator.textContent = 'Current Turn';
+            playerXIndicator.classList.remove('active');
+            playerXIndicator.textContent = 'Waiting...';
+        }
     }
 
     function handleCellClick(e) {
@@ -56,12 +71,24 @@ const gameBoard = document.getElementById('gameBoard');
             disableBoard();
             updateScore(mark);
             turnIndicator.innerHTML = `<span>${mark}</span> wins!`;
+            
+            // Update player indicators for winner
+            if (mark === 'X') {
+                playerXIndicator.textContent = 'Winner!';
+                playerOIndicator.textContent = 'Lost';
+            } else {
+                playerOIndicator.textContent = 'Winner!';
+                playerXIndicator.textContent = 'Lost';
+            }
+            
             return;
         }
         
         // Check for draw
         if (board.every(cell => cell !== null)) {
             turnIndicator.innerHTML = `It's a draw!`;
+            playerXIndicator.textContent = 'Draw';
+            playerOIndicator.textContent = 'Draw';
             return;
         }
 

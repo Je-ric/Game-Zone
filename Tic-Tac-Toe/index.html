@@ -13,22 +13,25 @@
   <div class="game-container">
     <h1 class="game-title">Tic Tac Toe</h1>
     
-    <div class="score-board">
-      <div class="score-card x">
-        <h3>Player X</h3>
-        <div id="scoreX" class="score-value">0</div>
-      </div>
-      <div class="score-card o">
-        <h3>Player O</h3>
-        <div id="scoreO" class="score-value">0</div>
-      </div>
-    </div>
-    
     <div id="turnIndicator" class="turn-indicator x">
       Current turn: <span>X</span>
     </div>
     
-    <div class="game-board" id="gameBoard"></div>
+    <div class="game-layout">
+      <div class="score-card x">
+        <h3>Player X</h3>
+        <div id="scoreX" class="score-value">0</div>
+        <div id="playerXIndicator" class="player-indicator x active">Current Turn</div>
+      </div>
+      
+      <div class="game-board" id="gameBoard"></div>
+      
+      <div class="score-card o">
+        <h3>Player O</h3>
+        <div id="scoreO" class="score-value">0</div>
+        <div id="playerOIndicator" class="player-indicator o">Waiting...</div>
+      </div>
+    </div>
     
     <div class="buttons">
       <button id="resetButton">New Game</button>
@@ -36,6 +39,6 @@
     </div>
   </div>
   
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
