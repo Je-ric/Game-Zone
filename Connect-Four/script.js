@@ -33,6 +33,7 @@ gameElement.addEventListener('click', function (event) {
   const col = parseInt(event.target.dataset.col);
   let placedRow = -1;
 
+  // Drop the disc in the lowest empty cell of the column
   for (let row = ROWS - 1; row >= 0; row--) {
     if (board[row][col] === '') {
       board[row][col] = currentPlayer;
@@ -46,6 +47,7 @@ gameElement.addEventListener('click', function (event) {
   const cell = document.querySelector(`.cell[data-row="${placedRow}"][data-col="${col}"]`);
   cell.classList.add(currentPlayer);
 
+  // Check for win
   const winCells = checkWinner(placedRow, col);
   if (winCells) {
     winCells.forEach(([r, c]) => {
@@ -57,24 +59,30 @@ gameElement.addEventListener('click', function (event) {
     return;
   }
 
+  // Check for draw
+  if (isBoardFull()) {
+    statusElement.textContent = `😐 It's a draw!`;
+    gameOver = true;
+    return;
+  }
+
+  // Switch player
   currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
   statusElement.textContent = `Player ${capitalize(currentPlayer)}'s Turn`;
 });
 
 function checkWinner(row, col) {
   const directions = [
-    { r: 0, c: 1 },
-    { r: 1, c: 0 },
-    { r: 1, c: 1 },
-    { r: 1, c: -1 }
+    { r: 0, c: 1 },  // Horizontal
+    { r: 1, c: 0 },  // Vertical
+    { r: 1, c: 1 },  // Diagonal /
+    { r: 1, c: -1 }  // Diagonal \
   ];
 
   for (let dir of directions) {
     const line = [[row, col]];
-
     line.push(...collectLine(row, col, dir.r, dir.c));
     line.push(...collectLine(row, col, -dir.r, -dir.c));
-
     if (line.length >= 4) {
       return line;
     }
@@ -99,6 +107,10 @@ function collectLine(row, col, rowStep, colStep) {
   }
 
   return cells;
+}
+
+function isBoardFull() {
+  return board.every(row => row.every(cell => cell !== ''));
 }
 
 function capitalize(word) {
