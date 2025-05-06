@@ -1,3 +1,4 @@
+
 let randomNumber;
 let maxTries;
 let maxRange;

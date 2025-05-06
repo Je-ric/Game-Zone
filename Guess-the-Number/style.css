@@ -1,51 +1,95 @@
+
 :root {
-    --primary: #1e3d3f;
-    --accent: #3dcf77;
-    --bg: #102c2e;
-    --text: #e0f7f1;
-    --muted: #8cbfb2;
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --secondary: #f97316;
+    --secondary-light: #fb923c;
+    --secondary-dark: #ea580c;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --text-lighter: #94a3b8;
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    --border-radius-sm: 8px;
+    --border-radius: 12px;
+    --border-radius-lg: 16px;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    padding: 0;
+    font-family: 'Outfit', sans-serif;
     background-color: var(--bg);
-    font-family: 'Segoe UI', sans-serif;
     color: var(--text);
-    /* min-height: 100vh; */
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 .header {
-    background-color: var(--primary);
-    /* width: 100%; */
-    padding: 1rem;
+    background-color: var(--card-bg);
+    padding: 1.25rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow);
+    position: relative;
+    z-index: 10;
 }
 
 .header h1 {
-    font-size: 24px;
-    color: var(--accent);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary);
+    position: relative;
+}
+
+.header h1::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 40%;
+    height: 3px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    border-radius: 2px;
 }
 
 .start-btn {
-    background-color: var(--accent);
-    color: black;
-    font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 8px;
+    background: linear-gradient(to right, var(--primary), var(--primary-dark));
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
     border: none;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
 }
 
 .start-btn:hover {
-    background-color: #2daf66;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(to right, var(--primary-dark), var(--primary-dark));
+}
+
+.start-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
 }
 
 main {
@@ -53,111 +97,203 @@ main {
     justify-content: center;
     align-items: center;
     flex-grow: 1;
-    padding: 20px;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
 }
 
 .game-container {
     display: flex;
-    flex-direction: row;
-    gap: 20px;
+    flex-direction: column;
+    gap: 2rem;
     max-width: 1000px;
     width: 100%;
+}
+
+@media (min-width: 768px) {
+    .game-container {
+        flex-direction: row;
+        align-items: flex-start;
+    }
 }
 
 .settings {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2rem;
     flex: 1;
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
 }
 
 .group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
+}
+
+.group p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
 }
 
 .radio-group {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 1rem;
-    flex-wrap: wrap;
 }
 
 .radio-group label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: #143434;
-    padding: 8px 12px;
-    border-radius: 8px;
+    position: relative;
+    padding: 0;
     cursor: pointer;
 }
 
+.radio-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f1f5f9;
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    height: 100%;
+    border: 2px solid transparent;
+}
+
 .radio-group input[type="radio"] {
-    accent-color: var(--accent);
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.radio-group input[type="radio"]:checked + .radio-option {
+    background-color: var(--primary-light);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: var(--shadow);
+}
+
+.radio-group input[type="radio"]:focus + .radio-option {
+    box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.radio-group label:hover .radio-option {
+    background-color: #e2e8f0;
+    transform: translateY(-2px);
 }
 
 .game-card {
-    background-color: var(--primary);
-    padding: 2rem;
-    border-radius: 16px;
+    background-color: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
     width: 100%;
     max-width: 400px;
     text-align: center;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
 }
 
 .game-card input[type="number"] {
     width: 100%;
-    padding: 12px;
-    font-size: 18px;
+    padding: 1rem;
+    font-size: 1.25rem;
+    font-family: 'Outfit', sans-serif;
     color: var(--text);
-    background-color: #1b4b4d;
-    border: 2px solid #3dcf77;
-    border-radius: 8px;
+    background-color: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--border-radius);
     text-align: center;
-    margin-top: 1rem;
     transition: all 0.3s ease;
 }
 
 .game-card input[type="number"]:focus {
-    border-color: #2daf66;
-    background-color: #143434;
+    border-color: var(--primary);
     outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
 .game-card input[type="number"]::placeholder {
-    color: var(--muted);
-    font-style: italic;
+    color: var(--text-lighter);
 }
 
 .submit-btn,
 .modal button {
-    background-color: var(--accent);
-    color: black;
-    font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 8px;
+    background: linear-gradient(to right, var(--secondary), var(--secondary-dark));
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
     border: none;
     cursor: pointer;
-    margin-top: 1rem;
-    width: 100%;
-    transition: background 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
 }
 
-.submit-btn:hover {
-    background-color: #2daf66;
+.submit-btn:hover,
+.modal button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(to right, var(--secondary-dark), var(--secondary-dark));
+}
+
+.submit-btn:active,
+.modal button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
 }
 
 .feedback {
-    margin-top: 1.2rem;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    background-color: #f1f5f9;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .guess-list {
-    margin-top: 0.8rem;
-    font-size: 0.9rem;
-    color: var(--muted);
+    font-size: 1rem;
+    color: var(--text-light);
+    padding: 0.75rem;
+    background-color: #f1f5f9;
+    border-radius: var(--border-radius);
+}
+
+#guessesLeft {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-light);
+    padding: 0.5rem 1rem;
+    background-color: #f1f5f9;
+    border-radius: 9999px;
+    display: inline-block;
 }
 
 .hidden {
@@ -168,25 +304,91 @@ main {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(15, 23, 42, 0.75);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 999;
+    backdrop-filter: blur(4px);
 }
 
 .modal.show {
     display: flex;
+    animation: fadeIn 0.3s ease;
 }
 
 .modal-content {
-    background: var(--primary);
-    padding: 2rem;
-    border-radius: 12px;
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: var(--border-radius-lg);
     text-align: center;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    box-shadow: var(--shadow-lg);
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+    overflow: hidden;
 }
 
-.modal-content button {
-    margin-top: 1rem;
+.modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+}
+
+#winModal .modal-content::before {
+    background: linear-gradient(to right, var(--success), var(--primary));
+}
+
+#loseModal .modal-content::before {
+    background: linear-gradient(to right, var(--error), var(--warning));
+}
+
+.modal-content h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+}
+
+.modal-content p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-light);
+}
+
+#winModal .modal-content button {
+    background: linear-gradient(to right, var(--success), var(--primary));
+}
+
+#loseModal .modal-content button {
+    background: linear-gradient(to right, var(--error), var(--warning));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .header h1::after {
+        left: 30%;
+        width: 40%;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    .settings, .game-card {
+        padding: 1.5rem;
+    }
+
+    .radio-group {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
