@@ -5,47 +5,57 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Emoji Catcher Game</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <main class="game-container">
+        <header>
+            <h1>Emoji Catcher</h1>
+            <p class="tagline">Catch the emojis as fast as you can!</p>
+        </header>
+
         <section class="stats-panel">
-            <div class="score-box">
-                <h2>Score:</h2>
-                <h2 id="score-display">0</h2>
+            <div class="stats-card">
+                <h2>Score</h2>
+                <div id="score-display" class="stats-value">0</div>
             </div>
-            <div class="timer-box">
-                <h2>Time Left:</h2>
-                <h2 id="timer-display">60</h2>
-            </div>
-            <div class="control-panel">
-                <div class="emoji-mode">
-                    <label>
-                        <input type="radio" name="emojiMode" value="single" checked />
-                        Single Emoji
-                    </label>
-                    <label>
-                        <input type="radio" name="emojiMode" value="random" />
-                        Random Emoji
-                    </label>
-                </div>
-                <div>
-                    <label for="time-select">Select Time:</label>
-                    <select id="time-select">
-                        <option value="10">10 Seconds</option>
-                        <option value="30">30 Seconds</option>
-                        <option value="60">60 Seconds</option>
-                        <option value="90">90 Seconds</option>
-                        <option value="120">120 Seconds</option>
-                    </select>
-                </div>
+            <div class="stats-card">
+                <h2>Time Left</h2>
+                <div id="timer-display" class="stats-value">60</div>
             </div>
         </section>
-    
-        <section class="controls">
-            <button id="start-button">Start Game</button>
+
+        <section class="controls-panel">
+            <div class="emoji-mode">
+                <label class="radio-container">Single Emoji
+                    <input type="radio" name="emojiMode" value="single" checked>
+                    <span class="checkmark"></span>
+                </label>
+                <label class="radio-container">Random Emoji
+                    <input type="radio" name="emojiMode" value="random">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <div class="time-select-container">
+                <label for="time-select">Game Duration</label>
+                <select id="time-select">
+                    <option value="10">10 Seconds</option>
+                    <option value="30">30 Seconds</option>
+                    <option value="60" selected>60 Seconds</option>
+                    <option value="90">90 Seconds</option>
+                    <option value="120">120 Seconds</option>
+                </select>
+            </div>
+
+            <div class="action-buttons">
+                <button id="start-button">Start Game</button>
+            </div>
         </section>
-    
+
         <section class="board-container">
             <div class="game-board">
                 <div class="tile" id="tile-1"></div>
@@ -60,16 +70,16 @@
                 <div class="tile" id="tile-10"></div>
             </div>
         </section>
-    
+
         <div id="game-over-modal" class="hidden">
             <div class="modal-content">
                 <h2>Game Over!</h2>
-                <p>Your final score is: <span id="final-score"></span></p>
-                <button id="restart-button">Restart Game</button>
+                <p>Your final score is: <span id="final-score">0</span></p>
+                <button id="restart-button">Play Again</button>
             </div>
         </div>
     </main>
-    
-    <script src="script.js" defer></script>
+
+    <script src="script.js"></script>
 </body>
 </html>

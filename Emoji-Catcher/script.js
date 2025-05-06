@@ -1,3 +1,4 @@
+
 const tiles = document.querySelectorAll(".tile");
 const timerDisplay = document.querySelector("#timer-display");
 const scoreDisplay = document.querySelector("#score-display");
