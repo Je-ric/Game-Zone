@@ -3,32 +3,43 @@
 <head>
     <meta charset="UTF-8" />
     <title>Connect Four</title>
-<link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Connect Four</h1>
-<div id="status">Player 1's turn (Red)</div>
+    <div class="container">
+        <header>
+            <h1>Connect Four</h1>
+            <div id="status">Player 1's turn (Red)</div>
+        </header>
 
-    <div class="game-container">
-    <div id="player1" class="player-panel active">
-        <h2>Player 1</h2>
-        <p>Score: <span id="score1">0</span></p>
+        <div class="game-container">
+            <div id="player1" class="player-panel active">
+                <h2>Player 1</h2>
+                <p>Score</p>
+                <div id="score1" class="score">0</div>
+            </div>
+            
+            <div id="game"></div>
+
+            <div id="player2" class="player-panel">
+                <h2>Player 2</h2>
+                <p>Score</p>
+                <div id="score2" class="score">0</div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button id="newRoundBtn">New Round</button>
+            <button id="newGameBtn">New Game</button>
+        </div>
+
+        <footer>
+            <p>Modern Connect Four Game</p>
+        </footer>
     </div>
-    
-    <div id="game"></div>
-
-    <div id="player2" class="player-panel">
-        <h2>Player 2</h2>
-        <p>Score: <span id="score2">0</span></p>
-    </div>
-    </div>
-
-
-<div>
-  <button id="newRoundBtn">New Round</button>
-  <button id="newGameBtn">New Game</button>
-</div>
-
 
 <script src="script.js"></script>
 </body>
