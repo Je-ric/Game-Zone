@@ -95,3 +95,28 @@ button:active {
   background: linear-gradient(135deg, #004c9c, #009fcc);
   transform: scale(0.98);
 }
+
+.player-panel {
+  background-color: #001f4d;
+  padding: 15px 25px;
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.player-panel.active {
+  border: 3px solid #00ffae;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00ffae;
+}
+
+.player-panel h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.player-panel p {
+  margin: 5px 0 0;
+  font-size: 1.2rem;
+}

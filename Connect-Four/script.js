@@ -1,120 +1,154 @@
 const ROWS = 6;
-const COLUMNS = 7;
-let currentPlayer = 'red';
+const COLS = 7;
 let board = [];
+let currentPlayer = 'red';
 let gameOver = false;
+let score = { red: 0, yellow: 0 };
 
-const gameElement = document.getElementById('game');
-const statusElement = document.getElementById('status');
+const game = document.getElementById('game');
+const statusEl = document.getElementById('status');
+const score1 = document.getElementById('score1');
+const score2 = document.getElementById('score2');
+const player1 = document.getElementById('player1');
+const player2 = document.getElementById('player2');
 
-function startGame() {
+function createBoard() {
   board = [];
-  gameElement.innerHTML = '';
-  gameOver = false;
-  currentPlayer = 'red';
-  statusElement.textContent = "Player Red's Turn";
-
+  game.innerHTML = '';
   for (let row = 0; row < ROWS; row++) {
-    board[row] = [];
-    for (let col = 0; col < COLUMNS; col++) {
+    const rowArr = [];
+    for (let col = 0; col < COLS; col++) {
       const cell = document.createElement('div');
       cell.classList.add('cell');
       cell.dataset.row = row;
       cell.dataset.col = col;
-      gameElement.appendChild(cell);
-      board[row][col] = '';
+      cell.addEventListener('click', handleMove);
+      game.appendChild(cell);
+      rowArr.push(null);
     }
+    board.push(rowArr);
   }
 }
 
-gameElement.addEventListener('click', function (event) {
-  if (gameOver || !event.target.classList.contains('cell')) return;
+function handleMove(e) {
+  if (gameOver) return;
 
-  const col = parseInt(event.target.dataset.col);
-  let placedRow = -1;
-
-  // Drop the disc in the lowest empty cell of the column
+  const col = parseInt(e.target.dataset.col);
   for (let row = ROWS - 1; row >= 0; row--) {
-    if (board[row][col] === '') {
+    if (!board[row][col]) {
       board[row][col] = currentPlayer;
-      placedRow = row;
+      const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+      cell.classList.add(currentPlayer);
+      if (checkWinner(row, col)) {
+        gameOver = true;
+        statusEl.textContent = `${getPlayerName(currentPlayer)} wins!`;
+        updateScore();
+        highlightWinner(row, col);
+      } else if (isDraw()) {
+        statusEl.textContent = `It's a draw!`;
+      } else {
+        currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
+        statusEl.textContent = `${getPlayerName(currentPlayer)}'s turn (${capitalize(currentPlayer)})`;
+        toggleActivePanel();
+      }
       break;
     }
   }
+}
 
-  if (placedRow === -1) return;
-
-  const cell = document.querySelector(`.cell[data-row="${placedRow}"][data-col="${col}"]`);
-  cell.classList.add(currentPlayer);
-
-  // Check for win
-  const winCells = checkWinner(placedRow, col);
-  if (winCells) {
-    winCells.forEach(([r, c]) => {
-      const winCell = document.querySelector(`.cell[data-row="${r}"][data-col="${c}"]`);
-      winCell.classList.add('winner');
-    });
-    statusElement.textContent = `🎉 Player ${capitalize(currentPlayer)} Wins!`;
-    gameOver = true;
-    return;
+function checkWinner(r, c) {
+  const directions = [[0,1], [1,0], [1,1], [1,-1]];
+  for (let [dr, dc] of directions) {
+    let count = 1;
+    count += countDirection(r, c, dr, dc);
+    count += countDirection(r, c, -dr, -dc);
+    if (count >= 4) return true;
   }
+  return false;
+}
 
-  // Check for draw
-  if (isBoardFull()) {
-    statusElement.textContent = `😐 It's a draw!`;
-    gameOver = true;
-    return;
+function countDirection(r, c, dr, dc) {
+  let count = 0;
+  let color = board[r][c];
+  r += dr;
+  c += dc;
+  while (r >= 0 && r < ROWS && c >= 0 && c < COLS && board[r][c] === color) {
+    count++;
+    r += dr;
+    c += dc;
   }
+  return count;
+}
 
-  // Switch player
-  currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
-  statusElement.textContent = `Player ${capitalize(currentPlayer)}'s Turn`;
-});
+function isDraw() {
+  return board.every(row => row.every(cell => cell));
+}
 
-function checkWinner(row, col) {
-  const directions = [
-    { r: 0, c: 1 },  // Horizontal
-    { r: 1, c: 0 },  // Vertical
-    { r: 1, c: 1 },  // Diagonal /
-    { r: 1, c: -1 }  // Diagonal \
-  ];
-
-  for (let dir of directions) {
-    const line = [[row, col]];
-    line.push(...collectLine(row, col, dir.r, dir.c));
-    line.push(...collectLine(row, col, -dir.r, -dir.c));
-    if (line.length >= 4) {
-      return line;
+function highlightWinner(r, c) {
+  const color = board[r][c];
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      if (dr === 0 && dc === 0) continue;
+      const line = [[r, c]];
+      for (let step = 1; step < 4; step++) {
+        const nr = r + dr * step;
+        const nc = c + dc * step;
+        if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS || board[nr][nc] !== color) break;
+        line.push([nr, nc]);
+      }
+      for (let step = 1; step < 4; step++) {
+        const nr = r - dr * step;
+        const nc = c - dc * step;
+        if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS || board[nr][nc] !== color) break;
+        line.push([nr, nc]);
+      }
+      if (line.length >= 4) {
+        line.forEach(([row, col]) => {
+          const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+          cell.classList.add('winner');
+        });
+        return;
+      }
     }
   }
-
-  return null;
 }
 
-function collectLine(row, col, rowStep, colStep) {
-  const cells = [];
-  let r = row + rowStep;
-  let c = col + colStep;
-
-  while (
-    r >= 0 && r < ROWS &&
-    c >= 0 && c < COLUMNS &&
-    board[r][c] === currentPlayer
-  ) {
-    cells.push([r, c]);
-    r += rowStep;
-    c += colStep;
-  }
-
-  return cells;
+function updateScore() {
+  score[currentPlayer]++;
+  score1.textContent = score.red;
+  score2.textContent = score.yellow;
 }
 
-function isBoardFull() {
-  return board.every(row => row.every(cell => cell !== ''));
+function toggleActivePanel() {
+  player1.classList.toggle('active', currentPlayer === 'red');
+  player2.classList.toggle('active', currentPlayer === 'yellow');
 }
 
-function capitalize(word) {
-  return word[0].toUpperCase() + word.slice(1);
+function getPlayerName(color) {
+  return color === 'red' ? 'Player 1' : 'Player 2';
 }
 
-startGame();
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+document.getElementById('newRoundBtn').addEventListener('click', () => {
+  currentPlayer = 'red';
+  gameOver = false;
+  statusEl.textContent = `Player 1's turn (Red)`;
+  toggleActivePanel();
+  createBoard();
+});
+
+document.getElementById('newGameBtn').addEventListener('click', () => {
+  score = { red: 0, yellow: 0 };
+  score1.textContent = 0;
+  score2.textContent = 0;
+  currentPlayer = 'red';
+  gameOver = false;
+  statusEl.textContent = `Player 1's turn (Red)`;
+  toggleActivePanel();
+  createBoard();
+});
+
+createBoard();
