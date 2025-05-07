@@ -137,7 +137,23 @@
       }
 
       correctColor = colors[getRandomInt(colors.length)];
-      colorDisplay.textContent = correctColor;
+let rgbForHex = correctColor;
+
+if (randomFormat === "rgba") {
+  const [r, g, b] = correctColor.match(/\d+/g);
+  rgbForHex = `rgb(${r}, ${g}, ${b})`;
+} else if (randomFormat === "hex") {
+  rgbForHex = correctColor;
+}
+
+let hexValue = rgbToHex(rgbForHex);
+
+colorDisplay.innerHTML = `
+  <strong>Guess this color:</strong><br>
+  ${correctColor}<br>
+  <small>HEX: ${hexValue}</small>
+`;
+
 
       colors.forEach((color) => {
         const btn = document.createElement("button");
