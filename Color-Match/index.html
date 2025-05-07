@@ -337,19 +337,15 @@
       return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
     }
 
-    // Start the countdown timer
     function startTimer(duration) {
-      // Clear any existing timer
       if (timerInterval) {
         clearInterval(timerInterval);
       }
 
-      // Hide the timer initially when starting a new round
       timerProgress.style.width = "100%";
       timerText.textContent = "";
       timerProgress.style.display = "none";
 
-      // Only show and start the timer after a correct/wrong answer
       if (disableClicks) {
         timerProgress.style.display = "block";
         
@@ -371,20 +367,18 @@
       }
     }
 
-    // Start the game by generating random colors
     function startGame() {
       disableClicks = false;
       choicesContainer.innerHTML = "";
       message.textContent = "";
       message.className = "";
 
-      // Start the timer (but it will be hidden until a guess is made)
       startTimer(nextRoundDelay);
 
       const difficulty = parseInt(difficultySelect.value);
       const colors = Array.from({ length: difficulty }, generateRandomRGB);
 
-      // Randomly select the correct color
+      // Randomly color
       correctColor = colors[getRandomInt(colors.length)];
 
       const correctColorHex = rgbToHex(correctColor);
@@ -439,17 +433,14 @@
       });
     }
 
-    // Restart the game when the restart button is clicked
     restartBtn.addEventListener("click", () => {
       score = 0;
       scoreDisplay.textContent = "Score: 0";
       startGame();
     });
 
-    // Change difficulty and start the game again
     difficultySelect.addEventListener("change", startGame);
 
-    // Start the game initially
     startGame();
   </script>
 </body>
