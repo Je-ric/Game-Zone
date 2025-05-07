@@ -125,52 +125,53 @@
     }
 
     function startGame() {
-      choicesContainer.innerHTML = "";
-      message.textContent = "";
+  choicesContainer.innerHTML = "";
+  message.textContent = "";
 
-      const formats = ["rgb", "rgba", "hex"];
-      const randomFormat = formats[getRandomInt(formats.length)];
-      const colors = [];
+  const formats = ["rgb", "rgba", "hex"];
+  const randomFormat = formats[getRandomInt(formats.length)];
+  const colors = [];
 
-      for (let i = 0; i < 6; i++) {
-        colors.push(generateRandomColor(randomFormat));
+  for (let i = 0; i < 6; i++) {
+    colors.push(generateRandomColor(randomFormat));
+  }
+
+  correctColor = colors[getRandomInt(colors.length)];
+  let rgbForHex = correctColor;
+
+  if (randomFormat === "rgba") {
+    const [r, g, b] = correctColor.match(/\d+/g);
+    rgbForHex = `rgb(${r}, ${g}, ${b})`;
+  } else if (randomFormat === "hex") {
+    rgbForHex = correctColor;
+  }
+
+  let hexValue = rgbToHex(rgbForHex);
+
+  colorDisplay.innerHTML = `
+    <strong>Guess this color:</strong><br>
+    ${correctColor}<br>
+    <small>HEX: ${hexValue}</small>
+  `;
+
+  colors.forEach((color) => {
+    const btn = document.createElement("button");
+    btn.className = "colorBtn";
+    btn.style.backgroundColor = color;
+    btn.addEventListener("click", () => {
+      if (color === correctColor) {
+        message.textContent = "✅ Correct!";
+        score++;
+        scoreDisplay.textContent = `Score: ${score}`;
+        setTimeout(startGame, 1000);
+      } else {
+        message.textContent = "❌ Wrong! Try again.";
       }
-
-      correctColor = colors[getRandomInt(colors.length)];
-let rgbForHex = correctColor;
-
-if (randomFormat === "rgba") {
-  const [r, g, b] = correctColor.match(/\d+/g);
-  rgbForHex = `rgb(${r}, ${g}, ${b})`;
-} else if (randomFormat === "hex") {
-  rgbForHex = correctColor;
+    });
+    choicesContainer.appendChild(btn); // This line was missing
+  });
 }
 
-let hexValue = rgbToHex(rgbForHex);
-
-colorDisplay.innerHTML = `
-  <strong>Guess this color:</strong><br>
-  ${correctColor}<br>
-  <small>HEX: ${hexValue}</small>
-`;
-
-
-      colors.forEach((color) => {
-        const btn = document.createElement("button");
-        btn.className = "colorBtn";
-        btn.style.backgroundColor = color;
-        btn.addEventListener("click", () => {
-  if (color === correctColor) {
-    message.textContent = "✅ Correct!";
-    score++;
-    scoreDisplay.textContent = `Score: ${score}`;
-    setTimeout(startGame, 1000);
-  } else {
-    message.textContent = "❌ Wrong! Try again.";
-  }
-});
-
-    }
 
     restartBtn.addEventListener("click", () => {
       score = 0;
