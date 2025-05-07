@@ -77,7 +77,7 @@
     const message = document.getElementById("message");
     const restartBtn = document.getElementById("restart");
 
-    // let score = 0;
+    let score = 0;
     let correctColor = "";
 
     function getRandomInt(max) {
@@ -160,18 +160,16 @@ colorDisplay.innerHTML = `
         btn.className = "colorBtn";
         btn.style.backgroundColor = color;
         btn.addEventListener("click", () => {
-          if (color === correctColor) {
-            message.textContent = "✅ Correct!";
-            score++;
-          } else {
-            message.textContent = "❌ Wrong! Try again.";
-            score = Math.max(0, score - 1);
-          }
-          scoreDisplay.textContent = `Score: ${score}`;
-          setTimeout(startGame, 1000);
-        });
-        choicesContainer.appendChild(btn);
-      });
+  if (color === correctColor) {
+    message.textContent = "✅ Correct!";
+    score++;
+    scoreDisplay.textContent = `Score: ${score}`;
+    setTimeout(startGame, 1000);
+  } else {
+    message.textContent = "❌ Wrong! Try again.";
+  }
+});
+
     }
 
     restartBtn.addEventListener("click", () => {
