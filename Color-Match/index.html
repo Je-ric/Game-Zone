@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Color Match Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    #colorDisplay {
+      font-size: 24px;
+      margin: 20px 0;
+    }
+
+    .choices {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .colorBtn {
+      width: 100px;
+      height: 100px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .colorBtn:hover {
+      transform: scale(1.1);
+    }
+
+    #score {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+
+    #message {
+      font-weight: bold;
+      margin: 10px;
+    }
+
+    button#restart {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎨 Color Match Game</h1>
+  <div id="colorDisplay">RGB(??, ??, ??)</div>
+
+  <div class="choices" id="choices"></div>
+
+  <div id="message"></div>
+  <div id="score">Score: 0</div>
+  <button id="restart">Restart Game</button>
+
+  <script>
+    const colorDisplay = document.getElementById("colorDisplay");
+    const choicesContainer = document.getElementById("choices");
+    const scoreDisplay = document.getElementById("score");
+    const message = document.getElementById("message");
+    const restartBtn = document.getElementById("restart");
+
+    let score = 0;
+    let correctColor = "";
+
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * max);
+    }
+
+    function generateRandomRGB() {
+      const r = getRandomInt(256);
+      const g = getRandomInt(256);
+      const b = getRandomInt(256);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function rgbToHex(rgb) {
+      const [r, g, b] = rgb.match(/\d+/g);
+      return (
+        "#" +
+        [r, g, b]
+          .map((x) => parseInt(x).toString(16).padStart(2, "0"))
+          .join("")
+      );
+    }
+
+    function generateRandomColor(format) {
+      const r = getRandomInt(256);
+      const g = getRandomInt(256);
+      const b = getRandomInt(256);
+      const a = (Math.random() * (1 - 0.3) + 0.3).toFixed(2); // between 0.3 and 1
+
+      switch (format) {
+        case "rgb":
+          return `rgb(${r}, ${g}, ${b})`;
+        case "rgba":
+          return `rgba(${r}, ${g}, ${b}, ${a})`;
+        case "hex":
+          return (
+            "#" +
+            [r, g, b]
+              .map((x) => x.toString(16).padStart(2, "0"))
+              .join("")
+          );
+        default:
+          return `rgb(${r}, ${g}, ${b})`;
+      }
+    }
+
+    function startGame() {
+      choicesContainer.innerHTML = "";
+      message.textContent = "";
+
+      const formats = ["rgb", "rgba", "hex"];
+      const randomFormat = formats[getRandomInt(formats.length)];
+      const colors = [];
+
+      for (let i = 0; i < 6; i++) {
+        colors.push(generateRandomColor(randomFormat));
+      }
+
+      correctColor = colors[getRandomInt(colors.length)];
+      colorDisplay.textContent = correctColor;
+
+      colors.forEach((color) => {
+        const btn = document.createElement("button");
+        btn.className = "colorBtn";
+        btn.style.backgroundColor = color;
+        btn.addEventListener("click", () => {
+          if (color === correctColor) {
+            message.textContent = "✅ Correct!";
+            score++;
+          } else {
+            message.textContent = "❌ Wrong! Try again.";
+            score = Math.max(0, score - 1);
+          }
+          scoreDisplay.textContent = `Score: ${score}`;
+          setTimeout(startGame, 1000);
+        });
+        choicesContainer.appendChild(btn);
+      });
+    }
+
+    restartBtn.addEventListener("click", () => {
+      score = 0;
+      scoreDisplay.textContent = "Score: 0";
+      startGame();
+    });
+
+    startGame();
+  </script>
+</body>
+</html>
