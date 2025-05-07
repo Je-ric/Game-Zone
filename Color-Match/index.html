@@ -1,54 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Color Match Game</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Color Match Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
+    <div class="container">
     <div class="game-header">
-      <h1>🎨 Color Match Game</h1>
-      <p class="game-description">Match the displayed color with the correct option below!</p>
-      
-      <div class="game-controls">
-        <select id="difficulty">
-          <option value="3">Easy (3 colors)</option>
-          <option value="6" selected>Medium (6 colors)</option>
-          <option value="9">Hard (9 colors)</option>
-        </select>
-        <button id="restart">Restart Game</button>
-      </div>
-    </div>
-
-    <div class="game-card">
-      <div id="colorDisplay">
-        <strong>Guess this color:</strong><br>
-        <span class="color-value">RGB(??, ??, ??)</span><br>
-        <span class="hex-value">HEX: #??????</span>
-      </div>
-
-      <div class="choices" id="choices"></div>
-
-      <div class="timer-container">
-        <div class="timer-label">Next round in:</div>
-        <div class="timer-bar">
-          <div id="timerProgress" class="timer-progress"></div>
+        <h1>🎨 Color Match Game</h1>
+        <p class="game-description">Match the displayed color with the correct option below!</p>
+        
+        <div class="game-controls">
+            <select id="difficulty">
+            <option value="3">Easy (3 colors)</option>
+            <option value="6" selected>Medium (6 colors)</option>
+            <option value="9">Hard (9 colors)</option>
+            </select>
+            <button id="restart">Restart Game</button>
         </div>
-        <div id="timerText" class="timer-text">0s</div>
-      </div>
+        </div>
 
-      <div class="game-feedback">
-        <div id="message"></div>
-        <div id="score">Score: 0</div>
-      </div>
+        <div class="game-card">
+        <div id="colorDisplay">
+            <strong>Guess this color:</strong><br>
+            <span class="color-value">RGB(??, ??, ??)</span><br>
+            <span class="hex-value">HEX: #??????</span>
+        </div>
+
+        <div class="choices" id="choices"></div>
+
+        <div class="timer-container">
+            <div class="timer-label">Next round in:</div>
+            <div class="timer-bar">
+            <div id="timerProgress" class="timer-progress"></div>
+            </div>
+            <div id="timerText" class="timer-text">0s</div>
+        </div>
+
+        <div class="game-feedback">
+            <div id="message"></div>
+            <div id="score">Score: 0</div>
+        </div>
+        </div>
     </div>
-  </div>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
