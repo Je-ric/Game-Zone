@@ -98,47 +98,38 @@
       return Math.floor(Math.random() * max);
     }
 
-    function generateRandomColor(format) {
+    // Function to generate a random RGB color
+    function generateRandomRGB() {
       const r = getRandomInt(256);
       const g = getRandomInt(256);
       const b = getRandomInt(256);
-      const a = (Math.random() * (1 - 0.3) + 0.3).toFixed(2); // 0.3–1
-
-      switch (format) {
-        case "rgb": return `rgb(${r}, ${g}, ${b})`;
-        case "rgba": return `rgba(${r}, ${g}, ${b}, ${a})`;
-        case "hex": return "#" + [r, g, b].map(x => x.toString(16).padStart(2, "0")).join("");
-        default: return `rgb(${r}, ${g}, ${b})`;
-      }
+      return `rgb(${r}, ${g}, ${b})`;
     }
 
+    // Convert RGB to Hex
     function rgbToHex(rgb) {
-      const [r, g, b] = rgb.match(/\d+/g);
-      return "#" + [r, g, b].map(x => parseInt(x).toString(16).padStart(2, "0")).join("");
+      const [r, g, b] = rgb.match(/\d+/g).map(Number);
+      return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
     }
 
+    // Start the game by generating random colors
     function startGame() {
       disableClicks = false;
       choicesContainer.innerHTML = "";
       message.textContent = "";
 
-      const formats = ["rgb", "rgba", "hex"];
-      const randomFormat = formats[getRandomInt(formats.length)];
-
       const difficulty = parseInt(difficultySelect.value);
-      const colors = Array.from({ length: difficulty }, () => generateRandomColor(randomFormat));
+      const colors = Array.from({ length: difficulty }, generateRandomRGB);
 
+      // Randomly select the correct color
       correctColor = colors[getRandomInt(colors.length)];
-      let rgbForHex = correctColor;
 
-      if (randomFormat === "rgba") {
-        const [r, g, b] = correctColor.match(/\d+/g);
-        rgbForHex = `rgb(${r}, ${g}, ${b})`;
-      }
+      const correctColorHex = rgbToHex(correctColor);
 
-      const hexValue = rgbToHex(rgbForHex);
-      colorDisplay.innerHTML = `<strong>Guess this color:</strong><br>${correctColor}<br><small>HEX: ${hexValue}</small>`;
+      // Display the color and its RGB & HEX values
+      colorDisplay.innerHTML = `<strong>Guess this color:</strong><br>${correctColor}<br><small>HEX: ${correctColorHex}</small>`;
 
+      // Create buttons for each color
       colors.forEach((color) => {
         const btn = document.createElement("button");
         btn.className = "colorBtn";
@@ -149,21 +140,26 @@
           if (disableClicks) return;
 
           disableClicks = true;
+
+          // Check if the clicked color is the correct one
           if (color === correctColor) {
             message.textContent = "✅ Correct!";
             score++;
             scoreDisplay.textContent = `Score: ${score}`;
           } else {
             message.textContent = "❌ Wrong!";
+
+            // Highlight the correct color
             const allButtons = document.querySelectorAll(".colorBtn");
             allButtons.forEach((b) => {
               if (b.dataset.color === correctColor) {
-                b.style.outline = "4px solid #4CAF50";
+                b.style.outline = "4px solid #4CAF50"; // Green outline
                 b.style.boxShadow = "0 0 10px #4CAF50";
               }
             });
           }
 
+          // Wait for 2.5 seconds, then start the next game
           setTimeout(startGame, 2500);
         });
 
@@ -171,14 +167,17 @@
       });
     }
 
+    // Restart the game when the restart button is clicked
     restartBtn.addEventListener("click", () => {
       score = 0;
       scoreDisplay.textContent = "Score: 0";
       startGame();
     });
 
+    // Change difficulty and start the game again
     difficultySelect.addEventListener("change", startGame);
 
+    // Start the game initially
     startGame();
   </script>
 </body>
