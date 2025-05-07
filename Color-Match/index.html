@@ -4,83 +4,304 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Color Match Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --secondary-light: #f472b6;
+      --secondary-dark: #db2777;
+      --success: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --neutral-50: #f8fafc;
+      --neutral-100: #f1f5f9;
+      --neutral-200: #e2e8f0;
+      --neutral-300: #cbd5e1;
+      --neutral-400: #94a3b8;
+      --neutral-500: #64748b;
+      --neutral-600: #475569;
+      --neutral-700: #334155;
+      --neutral-800: #1e293b;
+      --neutral-900: #0f172a;
+      --radius-sm: 0.375rem;
+      --radius: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, var(--neutral-100), var(--neutral-200));
+      color: var(--neutral-800);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .game-header {
       text-align: center;
-      background: #f2f2f2;
-      padding: 20px;
+      margin-bottom: 2rem;
     }
 
     h1 {
-      margin-bottom: 10px;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    #colorDisplay {
-      font-size: 24px;
-      margin: 20px 0;
+    .game-description {
+      color: var(--neutral-600);
+      margin-bottom: 1.5rem;
     }
 
-    .choices {
+    .game-controls {
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 1rem;
+      margin-bottom: 2rem;
       flex-wrap: wrap;
     }
 
-    .colorBtn {
-      width: 100px;
-      height: 100px;
+    select, button {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius);
       border: none;
-      border-radius: 8px;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: all 0.2s ease;
+    }
+
+    select {
+      background-color: white;
+      color: var(--neutral-800);
+      border: 1px solid var(--neutral-300);
+      box-shadow: var(--shadow-sm);
+      outline: none;
+    }
+
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    button#restart {
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
+      color: white;
+      font-weight: 500;
+      box-shadow: var(--shadow);
+    }
+
+    button#restart:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    button#restart:active {
+      transform: translateY(0);
+    }
+
+    .game-card {
+      background-color: white;
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 2rem;
+    }
+
+    #colorDisplay {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background-color: var(--neutral-50);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .color-value {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .hex-value {
+      font-size: 0.875rem;
+      color: var(--neutral-500);
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .colorBtn {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
     }
 
     .colorBtn:hover {
-      transform: scale(1.1);
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
     }
 
-    #score {
-      font-size: 18px;
-      margin-top: 20px;
+    .colorBtn:active {
+      transform: translateY(0);
+    }
+
+    .game-feedback {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
     }
 
     #message {
-      font-weight: bold;
-      margin: 10px;
+      font-weight: 600;
+      font-size: 1.125rem;
+      min-height: 1.75rem;
     }
 
-    button#restart, #difficulty {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
+    .correct {
+      color: var(--success);
     }
 
-    #difficulty {
-      margin-right: 10px;
+    .wrong {
+      color: var(--error);
+    }
+
+    #score {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--primary);
+      background-color: var(--neutral-50);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .timer-container {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .timer-label {
+      font-size: 0.875rem;
+      color: var(--neutral-600);
+      margin-bottom: 0.5rem;
+    }
+
+    .timer-bar {
+      height: 0.5rem;
+      background-color: var(--neutral-200);
+      border-radius: 9999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .timer-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      width: 100%;
+      transition: width linear;
+    }
+
+    .timer-text {
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--neutral-600);
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .game-card {
+        padding: 1.5rem;
+      }
+
+      .choices {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 0.75rem;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="game-header">
+      <h1>🎨 Color Match Game</h1>
+      <p class="game-description">Match the displayed color with the correct option below!</p>
+      
+      <div class="game-controls">
+        <select id="difficulty">
+          <option value="3">Easy (3 colors)</option>
+          <option value="6" selected>Medium (6 colors)</option>
+          <option value="9">Hard (9 colors)</option>
+        </select>
+        <button id="restart">Restart Game</button>
+      </div>
+    </div>
 
-  <h1>🎨 Color Match Game</h1>
-  <div>
-    <select id="difficulty">
-      <option value="3">Easy (3)</option>
-      <option value="6" selected>Medium (6)</option>
-      <option value="9">Hard (9)</option>
-    </select>
-    <button id="restart">Restart Game</button>
+    <div class="game-card">
+      <div id="colorDisplay">
+        <strong>Guess this color:</strong><br>
+        <span class="color-value">RGB(??, ??, ??)</span><br>
+        <span class="hex-value">HEX: #??????</span>
+      </div>
+
+      <div class="choices" id="choices"></div>
+
+      <div class="timer-container">
+        <div class="timer-label">Next round in:</div>
+        <div class="timer-bar">
+          <div id="timerProgress" class="timer-progress"></div>
+        </div>
+        <div id="timerText" class="timer-text">0s</div>
+      </div>
+
+      <div class="game-feedback">
+        <div id="message"></div>
+        <div id="score">Score: 0</div>
+      </div>
+    </div>
   </div>
-
-  <div id="colorDisplay">RGB(??, ??, ??)</div>
-
-  <div class="choices" id="choices"></div>
-
-  <div id="message"></div>
-  <div id="score">Score: 0</div>
 
   <script>
     const colorDisplay = document.getElementById("colorDisplay");
@@ -89,10 +310,14 @@
     const message = document.getElementById("message");
     const restartBtn = document.getElementById("restart");
     const difficultySelect = document.getElementById("difficulty");
+    const timerProgress = document.getElementById("timerProgress");
+    const timerText = document.getElementById("timerText");
 
     let score = 0;
     let correctColor = "";
     let disableClicks = false;
+    let timerInterval = null;
+    const nextRoundDelay = 2500; // 2.5 seconds
 
     function getRandomInt(max) {
       return Math.floor(Math.random() * max);
@@ -112,11 +337,49 @@
       return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
     }
 
+    // Start the countdown timer
+    function startTimer(duration) {
+      // Clear any existing timer
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+
+      // Hide the timer initially when starting a new round
+      timerProgress.style.width = "100%";
+      timerText.textContent = "";
+      timerProgress.style.display = "none";
+
+      // Only show and start the timer after a correct/wrong answer
+      if (disableClicks) {
+        timerProgress.style.display = "block";
+        
+        const startTime = Date.now();
+        const endTime = startTime + duration;
+        
+        timerInterval = setInterval(() => {
+          const currentTime = Date.now();
+          const timeLeft = Math.max(0, endTime - currentTime);
+          const progress = (timeLeft / duration) * 100;
+          
+          timerProgress.style.width = `${progress}%`;
+          timerText.textContent = `${(timeLeft / 1000).toFixed(1)}s`;
+          
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+          }
+        }, 100);
+      }
+    }
+
     // Start the game by generating random colors
     function startGame() {
       disableClicks = false;
       choicesContainer.innerHTML = "";
       message.textContent = "";
+      message.className = "";
+
+      // Start the timer (but it will be hidden until a guess is made)
+      startTimer(nextRoundDelay);
 
       const difficulty = parseInt(difficultySelect.value);
       const colors = Array.from({ length: difficulty }, generateRandomRGB);
@@ -127,7 +390,11 @@
       const correctColorHex = rgbToHex(correctColor);
 
       // Display the color and its RGB & HEX values
-      colorDisplay.innerHTML = `<strong>Guess this color:</strong><br>${correctColor}<br><small>HEX: ${correctColorHex}</small>`;
+      colorDisplay.innerHTML = `
+        <strong>Guess this color:</strong><br>
+        <span class="color-value">${correctColor}</span><br>
+        <span class="hex-value">HEX: ${correctColorHex}</span>
+      `;
 
       // Create buttons for each color
       colors.forEach((color) => {
@@ -144,23 +411,28 @@
           // Check if the clicked color is the correct one
           if (color === correctColor) {
             message.textContent = "✅ Correct!";
+            message.className = "correct";
             score++;
             scoreDisplay.textContent = `Score: ${score}`;
           } else {
             message.textContent = "❌ Wrong!";
+            message.className = "wrong";
 
             // Highlight the correct color
             const allButtons = document.querySelectorAll(".colorBtn");
             allButtons.forEach((b) => {
               if (b.dataset.color === correctColor) {
-                b.style.outline = "4px solid #4CAF50"; // Green outline
-                b.style.boxShadow = "0 0 10px #4CAF50";
+                b.style.outline = "4px solid var(--success)";
+                b.style.boxShadow = "0 0 15px var(--success)";
               }
             });
           }
 
+          // Start the timer for the next round
+          startTimer(nextRoundDelay);
+
           // Wait for 2.5 seconds, then start the next game
-          setTimeout(startGame, 2500);
+          setTimeout(startGame, nextRoundDelay);
         });
 
         choicesContainer.appendChild(btn);
