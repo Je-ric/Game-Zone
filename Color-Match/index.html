@@ -76,21 +76,21 @@
     const scoreDisplay = document.getElementById("score");
     const message = document.getElementById("message");
     const restartBtn = document.getElementById("restart");
-
+  
     let score = 0;
     let correctColor = "";
-
+  
     function getRandomInt(max) {
       return Math.floor(Math.random() * max);
     }
-
+  
     function generateRandomRGB() {
       const r = getRandomInt(256);
       const g = getRandomInt(256);
       const b = getRandomInt(256);
       return `rgb(${r}, ${g}, ${b})`;
     }
-
+  
     function rgbToHex(rgb) {
       const [r, g, b] = rgb.match(/\d+/g);
       return (
@@ -100,13 +100,13 @@
           .join("")
       );
     }
-
+  
     function generateRandomColor(format) {
       const r = getRandomInt(256);
       const g = getRandomInt(256);
       const b = getRandomInt(256);
       const a = (Math.random() * (1 - 0.3) + 0.3).toFixed(2); // between 0.3 and 1
-
+  
       switch (format) {
         case "rgb":
           return `rgb(${r}, ${g}, ${b})`;
@@ -123,80 +123,76 @@
           return `rgb(${r}, ${g}, ${b})`;
       }
     }
-
+  
     function startGame() {
-  choicesContainer.innerHTML = "";
-  message.textContent = "";
-
-  const formats = ["rgb", "rgba", "hex"];
-  const randomFormat = formats[getRandomInt(formats.length)];
-  const colors = [];
-
-  for (let i = 0; i < 6; i++) {
-    colors.push(generateRandomColor(randomFormat));
-  }
-
-  correctColor = colors[getRandomInt(colors.length)];
-  let rgbForHex = correctColor;
-
-  if (randomFormat === "rgba") {
-    const [r, g, b] = correctColor.match(/\d+/g);
-    rgbForHex = `rgb(${r}, ${g}, ${b})`;
-  } else if (randomFormat === "hex") {
-    rgbForHex = correctColor;
-  }
-
-  let hexValue = rgbToHex(rgbForHex);
-
-  colorDisplay.innerHTML = `
-    <strong>Guess this color:</strong><br>
-    ${correctColor}<br>
-    <small>HEX: ${hexValue}</small>
-  `;
-
-colors.forEach((color) => {
-  const btn = document.createElement("button");
-  btn.className = "colorBtn";
-  btn.style.backgroundColor = color;
-
-  // Store the color on the button for reference
-  btn.dataset.color = color;
-
-  btn.addEventListener("click", () => {
-    if (color === correctColor) {
-      message.textContent = "✅ Correct!";
-      score++;
-      scoreDisplay.textContent = `Score: ${score}`;
-      setTimeout(startGame, 1000);
-    } else {
-      message.textContent = "❌ Wrong!";
-
-      // Highlight the correct button
-      const allButtons = document.querySelectorAll(".colorBtn");
-      allButtons.forEach((b) => {
-        if (b.dataset.color === correctColor) {
-          b.style.outline = "4px solid #4CAF50"; // green outline
-          b.style.boxShadow = "0 0 10px #4CAF50";
-        }
+      choicesContainer.innerHTML = "";
+      message.textContent = "";
+  
+      const formats = ["rgb", "rgba", "hex"];
+      const randomFormat = formats[getRandomInt(formats.length)];
+      const colors = [];
+  
+      for (let i = 0; i < 6; i++) {
+        colors.push(generateRandomColor(randomFormat));
+      }
+  
+      correctColor = colors[getRandomInt(colors.length)];
+      let rgbForHex = correctColor;
+  
+      if (randomFormat === "rgba") {
+        const [r, g, b] = correctColor.match(/\d+/g);
+        rgbForHex = `rgb(${r}, ${g}, ${b})`;
+      } else if (randomFormat === "hex") {
+        rgbForHex = correctColor;
+      }
+  
+      let hexValue = rgbToHex(rgbForHex);
+  
+      colorDisplay.innerHTML = `
+        <strong>Guess this color:</strong><br>
+        ${correctColor}<br>
+        <small>HEX: ${hexValue}</small>
+      `;
+  
+      colors.forEach((color) => {
+        const btn = document.createElement("button");
+        btn.className = "colorBtn";
+        btn.style.backgroundColor = color;
+        btn.dataset.color = color;
+  
+        btn.addEventListener("click", function handleClick() {
+          const allButtons = document.querySelectorAll(".colorBtn");
+          allButtons.forEach((b) => b.disabled = true); // disable all buttons
+  
+          if (color === correctColor) {
+            message.textContent = "✅ Correct!";
+            score++;
+            scoreDisplay.textContent = `Score: ${score}`;
+          } else {
+            message.textContent = "❌ Wrong!";
+            allButtons.forEach((b) => {
+              if (b.dataset.color === correctColor) {
+                b.style.outline = "4px solid #4CAF50";
+                b.style.boxShadow = "0 0 10px #4CAF50";
+              }
+            });
+          }
+  
+          setTimeout(startGame, 2500); // wait 2.5s before resetting
+        });
+  
+        choicesContainer.appendChild(btn);
       });
-
-      // Wait 2.5 seconds, then start a new game
-      setTimeout(startGame, 2500);
     }
-  });
-
-  choicesContainer.appendChild(btn);
-});
-}
-
-
+  
     restartBtn.addEventListener("click", () => {
       score = 0;
       scoreDisplay.textContent = "Score: 0";
       startGame();
     });
-
+  
     startGame();
   </script>
+  
 </body>
 </html>
