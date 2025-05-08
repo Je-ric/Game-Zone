@@ -1,74 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Simple Coin Flip Game</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Heads or Tails Game</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
       text-align: center;
-      padding: 30px;
+      padding: 40px;
     }
 
     .container {
       background: white;
-      padding: 20px;
-      border-radius: 10px;
-      display: inline-block;
+      padding: 30px;
+      border-radius: 12px;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      width: 320px;
-    }
-
-    .coin {
-      font-size: 80px;
-      margin: 20px 0;
+      max-width: 400px;
+      margin: auto;
     }
 
     input, select, button {
-      padding: 8px;
       margin: 10px 0;
+      padding: 10px;
       font-size: 16px;
       width: 90%;
     }
 
-    .scoreboard {
-      margin-top: 15px;
+    button {
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
     }
 
     .hidden {
       display: none;
     }
 
+    .coin {
+      font-size: 70px;
+      margin: 20px 0;
+    }
+
+    .scoreboard {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
     .result {
       font-weight: bold;
-      margin: 10px 0;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>🪙 Coin Flip Game</h2>
+    <h2>Heads or Tails Game</h2>
 
     <div id="setup">
-      <input id="player1" placeholder="Player 1 Name" />
-      <input id="player2" placeholder="Player 2 Name" />
+      <input type="text" id="player1" placeholder="Enter Player 1 Name" />
+      <input type="text" id="player2" placeholder="Enter Player 2 Name" />
       <button onclick="startGame()">Start Game</button>
     </div>
 
     <div id="game" class="hidden">
-      <div class="coin" id="coin">💰</div>
+      <p><strong id="turnText">Both players choose:</strong></p>
 
-      <p id="turnText"></p>
-      <select id="bet">
-        <option value="Heads">Heads</option>
-        <option value="Tails">Tails</option>
-      </select><br>
+      <div>
+        <label><span id="name1">Player 1</span>'s Guess:</label>
+        <select id="guess1">
+          <option value="Heads">Heads</option>
+          <option value="Tails">Tails</option>
+        </select>
+      </div>
+
+      <div>
+        <label><span id="name2">Player 2</span>'s Guess:</label>
+        <select id="guess2">
+          <option value="Heads">Heads</option>
+          <option value="Tails">Tails</option>
+        </select>
+      </div>
+
       <button onclick="flip()">Flip Coin</button>
+
+      <div class="coin" id="coin">🪙</div>
       <p class="result" id="resultText">Choose and flip!</p>
 
       <div class="scoreboard" id="scoreboard"></div>
-      <button onclick="nextTurn()">Next Turn</button>
       <button onclick="restart()">Restart Game</button>
     </div>
   </div>
@@ -76,7 +102,6 @@
   <script>
     let names = ["Player 1", "Player 2"];
     let scores = [0, 0];
-    let turn = 0;
 
     function startGame() {
       const p1 = document.getElementById("player1").value.trim();
@@ -84,54 +109,54 @@
       names[0] = p1 || "Player 1";
       names[1] = p2 || "Player 2";
 
+      document.getElementById("name1").textContent = names[0];
+      document.getElementById("name2").textContent = names[1];
+
       document.getElementById("setup").classList.add("hidden");
       document.getElementById("game").classList.remove("hidden");
 
-      updateTurnText();
       updateScoreboard();
-    }
-
-    function updateTurnText() {
-      document.getElementById("turnText").textContent = `${names[turn]}'s Turn`;
-    }
-
-    function updateScoreboard() {
-      document.getElementById("scoreboard").innerHTML =
-        `${names[0]}: ${scores[0]} wins<br>${names[1]}: ${scores[1]} wins`;
     }
 
     function flip() {
-      const userGuess = document.getElementById("bet").value;
+      const guess1 = document.getElementById("guess1").value;
+      const guess2 = document.getElementById("guess2").value;
       const result = Math.random() < 0.5 ? "Heads" : "Tails";
+
       const coin = document.getElementById("coin");
       const resultText = document.getElementById("resultText");
-
       coin.textContent = result === "Heads" ? "🙂" : "🐍";
 
-      if (userGuess === result) {
-        resultText.textContent = `Correct! It was ${result}. ${names[turn]} scores!`;
-        scores[turn]++;
-      } else {
-        resultText.textContent = `Wrong! It was ${result}.`;
+      let message = `It was ${result}!<br>`;
+      if (guess1 === result) {
+        scores[0]++;
+        message += `${names[0]} guessed right!<br>`;
+      }
+      if (guess2 === result) {
+        scores[1]++;
+        message += `${names[1]} guessed right!<br>`;
+      }
+      if (guess1 !== result && guess2 !== result) {
+        message += `No one guessed correctly.`;
       }
 
+      resultText.innerHTML = message;
       updateScoreboard();
     }
 
-    function nextTurn() {
-      turn = (turn + 1) % 2;
-      document.getElementById("coin").textContent = "💰";
-      document.getElementById("resultText").textContent = "Choose and flip!";
-      updateTurnText();
+    function updateScoreboard() {
+      const board = document.getElementById("scoreboard");
+      board.innerHTML = `${names[0]}: ${scores[0]} pts<br>${names[1]}: ${scores[1]} pts`;
     }
 
     function restart() {
       scores = [0, 0];
-      turn = 0;
       document.getElementById("player1").value = "";
       document.getElementById("player2").value = "";
-      document.getElementById("game").classList.add("hidden");
       document.getElementById("setup").classList.remove("hidden");
+      document.getElementById("game").classList.add("hidden");
+      document.getElementById("coin").textContent = "🪙";
+      document.getElementById("resultText").textContent = "Choose and flip!";
     }
   </script>
 </body>
