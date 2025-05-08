@@ -8,8 +8,13 @@
     body {
       font-family: Arial, sans-serif;
       background: #f5f5f5;
-      text-align: center;
-      padding: 40px;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
     }
 
     .container {
@@ -17,8 +22,13 @@
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      max-width: 800px;
-      margin: auto;
+      max-width: 100%;
+      width: 80%;
+      height: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-y: auto;
     }
 
     #setup, #game {
@@ -48,8 +58,9 @@
     }
 
     .coin {
-      font-size: 100px;
-      margin: 20px 0;
+      font-size: 60px;
+      margin: 5px;
+      display: inline-block;
       transition: transform 1s ease-out;
     }
 
@@ -65,11 +76,11 @@
       display: none;
     }
 
-    /* Flex container for the game */
     .game-container {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      width: 100%;
       margin-top: 20px;
     }
 
@@ -81,6 +92,10 @@
     .coin-container {
       text-align: center;
       width: 30%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     .bet-container {
@@ -90,11 +105,20 @@
 
     .player-name {
       font-weight: bold;
+      font-size: 20px;
     }
 
     .result {
       font-weight: bold;
       margin-top: 10px;
+    }
+
+    .coin-options {
+      margin-top: 20px;
+    }
+
+    .coin-option-label {
+      font-size: 16px;
     }
   </style>
 </head>
@@ -103,17 +127,24 @@
     <h2>Heads or Tails Game</h2>
 
     <div id="setup">
-      <input type="text" id="player1" placeholder="Enter Player 1 Name" />
-      <input type="text" id="player2" placeholder="Enter Player 2 Name" />
-      <label for="numCoins">Number of coins (Max 3):</label>
-      <input type="number" id="numCoins" min="1" max="3" value="1" />
+      <div class="coin-options">
+        <label class="coin-option-label">Number of Coins:</label>
+        <div>
+          <input type="radio" id="oneCoin" name="numCoins" value="1" checked>
+          <label for="oneCoin">1</label>
+          <input type="radio" id="twoCoins" name="numCoins" value="2">
+          <label for="twoCoins">2</label>
+          <input type="radio" id="threeCoins" name="numCoins" value="3">
+          <label for="threeCoins">3</label>
+        </div>
+      </div>
       <button onclick="startGame()">Start Game</button>
     </div>
 
     <div id="game" class="hidden">
       <div class="game-container">
         <div class="player">
-          <p class="player-name" id="name1">Player 1</p>
+          <input type="text" class="player-name" id="name1" value="Player 1" />
           <p id="score1">Score: 0</p>
           <div class="bet-container">
             <label>Guess:</label>
@@ -125,11 +156,11 @@
         </div>
 
         <div class="coin-container">
-          <div class="coin" id="coin1">🪙</div>
+          <!-- Coins will be placed here in a row -->
         </div>
 
         <div class="player">
-          <p class="player-name" id="name2">Player 2</p>
+          <input type="text" class="player-name" id="name2" value="Player 2" />
           <p id="score2">Score: 0</p>
           <div class="bet-container">
             <label>Guess:</label>
@@ -156,29 +187,32 @@
     const targetScore = 5;
     let numCoins = 1;
 
+    // Function to start the game
     function startGame() {
       // Get names from the input fields, defaulting to "Player 1" and "Player 2" if empty
-      const p1 = document.getElementById("player1").value.trim() || "Player 1";
-      const p2 = document.getElementById("player2").value.trim() || "Player 2";
-      
+      const p1 = document.getElementById("name1").value.trim() || "Player 1";
+      const p2 = document.getElementById("name2").value.trim() || "Player 2";
+
       names[0] = p1;
       names[1] = p2;
 
       // Update player names on the game screen
-      document.getElementById("name1").textContent = names[0];
-      document.getElementById("name2").textContent = names[1];
+      document.getElementById("name1").value = names[0];
+      document.getElementById("name2").value = names[1];
 
-      // Get the number of coins for the game
-      numCoins = parseInt(document.getElementById("numCoins").value);
+      // Get the number of coins for the game based on selected radio
+      numCoins = parseInt(document.querySelector('input[name="numCoins"]:checked').value);
 
       // Hide the setup and show the game section
       document.getElementById("setup").classList.add("hidden");
       document.getElementById("game").classList.remove("hidden");
 
-      // Update the scoreboard
+      // Clear coin container and update scoreboard
+      document.querySelector(".coin-container").innerHTML = '';
       updateScoreboard();
     }
 
+    // Function to flip the coins
     function flip() {
       if (scores[0] >= targetScore || scores[1] >= targetScore) return;
 
@@ -194,7 +228,7 @@
         coinElement.classList.add("coin");
         coinElement.id = `coin${i}`;
         coinElement.textContent = "🪙";
-        document.getElementById("coin1").appendChild(coinElement);
+        document.querySelector(".coin-container").appendChild(coinElement);
 
         coinElement.classList.add("flip");
         setTimeout(() => {
@@ -223,6 +257,7 @@
       }
     }
 
+    // Function to update the scoreboard
     function updateScoreboard() {
       document.getElementById("score1").textContent = `${names[0]} Score: ${scores[0]}`;
       document.getElementById("score2").textContent = `${names[1]} Score: ${scores[1]}`;
@@ -237,14 +272,15 @@
       }
     }
 
+    // Function to restart the game
     function restart() {
       scores = [0, 0];
-      document.getElementById("player1").value = "";
-      document.getElementById("player2").value = "";
+      document.getElementById("name1").value = "Player 1";
+      document.getElementById("name2").value = "Player 2";
       document.getElementById("numCoins").value = "1";
       document.getElementById("setup").classList.remove("hidden");
       document.getElementById("game").classList.add("hidden");
-      document.getElementById("coin1").innerHTML = "🪙";
+      document.querySelector(".coin-container").innerHTML = '';
       document.getElementById("resultText").textContent = "Choose and flip!";
       document.querySelector("button").disabled = false; // Enable button for new game
     }
