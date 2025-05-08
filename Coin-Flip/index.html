@@ -73,6 +73,8 @@
     <div id="setup">
       <input type="text" id="player1" placeholder="Enter Player 1 Name" />
       <input type="text" id="player2" placeholder="Enter Player 2 Name" />
+      <label for="numCoins">Number of coins (Max 3):</label>
+      <input type="number" id="numCoins" min="1" max="3" value="1" />
       <button onclick="startGame()">Start Game</button>
     </div>
 
@@ -95,9 +97,12 @@
         </select>
       </div>
 
-      <button onclick="flip()">Flip Coin</button>
+      <button onclick="flip()">Flip Coins</button>
 
-      <div class="coin" id="coin">🪙</div>
+      <div id="coinsContainer">
+        <div class="coin" id="coin1">🪙</div>
+      </div>
+
       <p class="result" id="resultText">Choose and flip!</p>
 
       <div class="scoreboard" id="scoreboard"></div>
@@ -109,12 +114,15 @@
     let names = ["Player 1", "Player 2"];
     let scores = [0, 0];
     const targetScore = 5;
+    let numCoins = 1;
 
     function startGame() {
       const p1 = document.getElementById("player1").value.trim();
       const p2 = document.getElementById("player2").value.trim();
       names[0] = p1 || "Player 1";
       names[1] = p2 || "Player 2";
+      
+      numCoins = parseInt(document.getElementById("numCoins").value);
 
       document.getElementById("name1").textContent = names[0];
       document.getElementById("name2").textContent = names[1];
@@ -126,37 +134,47 @@
     }
 
     function flip() {
-      // Disable the button after a winner is found
       if (scores[0] >= targetScore || scores[1] >= targetScore) return;
 
       const guess1 = document.getElementById("guess1").value;
       const guess2 = document.getElementById("guess2").value;
-      const result = Math.random() < 0.5 ? "Heads" : "Tails";
 
-      const coin = document.getElementById("coin");
-      coin.classList.add('flip');
-      
-      // Wait for the animation to finish, then update the result
-      setTimeout(() => {
-        coin.classList.remove('flip');
-        coin.textContent = result === "Heads" ? "🙂" : "🐍";
+      let coinsFlipped = 0;
+      let message = "";
 
-        let message = `It was ${result}!<br>`;
-        if (guess1 === result) {
-          scores[0]++;
-          message += `${names[0]} guessed right!<br>`;
-        }
-        if (guess2 === result) {
-          scores[1]++;
-          message += `${names[1]} guessed right!<br>`;
-        }
-        if (guess1 !== result && guess2 !== result) {
-          message += `No one guessed correctly.`;
-        }
+      for (let i = 1; i <= numCoins; i++) {
+        // Create new coin element for each flip
+        const coinElement = document.createElement("div");
+        coinElement.classList.add("coin");
+        coinElement.id = `coin${i}`;
+        coinElement.textContent = "🪙";
+        document.getElementById("coinsContainer").appendChild(coinElement);
 
-        resultText.innerHTML = message;
-        updateScoreboard();
-      }, 1000); // Animation duration
+        coinElement.classList.add("flip");
+        setTimeout(() => {
+          const result = Math.random() < 0.5 ? "Heads" : "Tails";
+          coinElement.textContent = result === "Heads" ? "🙂" : "🐍";
+
+          if (i === numCoins) {
+            coinsFlipped++;
+            if (guess1 === result) {
+              scores[0]++;
+              message += `${names[0]} guessed right!<br>`;
+            }
+            if (guess2 === result) {
+              scores[1]++;
+              message += `${names[1]} guessed right!<br>`;
+            }
+
+            if (coinsFlipped === numCoins) {
+              message += `It was ${result}!<br>`;
+              message += (guess1 !== result && guess2 !== result) ? "No one guessed correctly." : "";
+              document.getElementById("resultText").innerHTML = message;
+              updateScoreboard();
+            }
+          }
+        }, 1000 * i); // Add delay for each coin flip
+      }
     }
 
     function updateScoreboard() {
@@ -166,7 +184,7 @@
       // Check for winner
       if (scores[0] >= targetScore) {
         document.getElementById("resultText").innerHTML = `${names[0]} wins! Congratulations!`;
-        document.querySelector("button").disabled = true; // Disable button after game ends
+        document.querySelector("button").disabled = true;
       } else if (scores[1] >= targetScore) {
         document.getElementById("resultText").innerHTML = `${names[1]} wins! Congratulations!`;
         document.querySelector("button").disabled = true;
@@ -177,9 +195,10 @@
       scores = [0, 0];
       document.getElementById("player1").value = "";
       document.getElementById("player2").value = "";
+      document.getElementById("numCoins").value = "1";
       document.getElementById("setup").classList.remove("hidden");
       document.getElementById("game").classList.add("hidden");
-      document.getElementById("coin").textContent = "🪙";
+      document.getElementById("coinsContainer").innerHTML = "<div class='coin' id='coin1'>🪙</div>";
       document.getElementById("resultText").textContent = "Choose and flip!";
       document.querySelector("button").disabled = false; // Enable button for new game
     }
