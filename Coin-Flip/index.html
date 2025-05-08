@@ -85,7 +85,7 @@
 
       <button id="flipButton" onclick="flipCoin()">Flip Coin</button>
       <button id="playAgain" onclick="nextTurn()">Next Turn</button>
-      <button onclick="resetStats()" style="background-color:#f44336;color:white;">Reset Stats</button>
+      <button onclick="restartGame()" style="background-color:#f44336;color:white;">Restart Game</button>
 
       <p id="result">Pick a side and flip the coin!</p>
 
@@ -106,7 +106,7 @@
     let currentPlayer = 0; // 0 or 1
     let playerNames = ["Player 1", "Player 2"];
 
-    let stats = JSON.parse(localStorage.getItem("coinGameStats")) || {
+    let stats = {
       player1: { wins: 0, losses: 0 },
       player2: { wins: 0, losses: 0 },
       totalPlays: 0
@@ -142,7 +142,6 @@
       const isHeads = Math.random() < 0.5;
       const result = isHeads ? "Heads" : "Tails";
 
-      // Animate coin (rotate effect)
       coinDisplay.style.transform = "rotateY(360deg)";
       setTimeout(() => {
         coinDisplay.textContent = isHeads ? "🙂" : "🐍";
@@ -160,7 +159,6 @@
         }
 
         stats.totalPlays++;
-        localStorage.setItem("coinGameStats", JSON.stringify(stats));
         updateScoreboard();
 
         flipButton.style.display = "none";
@@ -177,15 +175,26 @@
       playAgainBtn.style.display = "none";
     }
 
-    function resetStats() {
-      localStorage.removeItem("coinGameStats");
+    function restartGame() {
+      // Reset all game state
       stats = {
         player1: { wins: 0, losses: 0 },
         player2: { wins: 0, losses: 0 },
         totalPlays: 0
       };
-      updateScoreboard();
-      resultText.textContent = "Stats reset! Flip to play again.";
+
+      playerNames = ["Player 1", "Player 2"];
+      currentPlayer = 0;
+
+      // Reset UI
+      nameInputs.classList.remove("hidden");
+      gameSection.classList.add("hidden");
+      document.getElementById("name1").value = "";
+      document.getElementById("name2").value = "";
+      resultText.textContent = "Pick a side and flip the coin!";
+      coinDisplay.textContent = "💰";
+      flipButton.style.display = "inline-block";
+      playAgainBtn.style.display = "none";
     }
   </script>
 </body>
