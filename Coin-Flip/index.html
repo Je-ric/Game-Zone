@@ -18,19 +18,20 @@
       border-radius: 10px;
       display: inline-block;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      max-width: 400px;
+      max-width: 450px;
     }
 
     .coin {
-      width: 100px;
+      font-size: 80px;
       margin: 20px auto;
       transition: transform 0.6s ease-in-out;
     }
 
-    select, button {
+    input, select, button {
       padding: 10px;
       font-size: 16px;
       margin-top: 10px;
+      margin-bottom: 10px;
     }
 
     .scoreboard {
@@ -51,76 +52,111 @@
     .highlight {
       color: green;
     }
+
+    .name-inputs {
+      margin-bottom: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>2-Player Coin Flip Game</h1>
-    <img id="coinImage" class="coin" src="https://i.imgur.com/5nmEqzN.png" alt="Coin" />
+    <h1>🪙 2-Player Coin Flip Game</h1>
 
-    <div class="player-indicator" id="playerIndicator">Player 1's turn</div>
+    <div class="name-inputs" id="nameInputs">
+      <input id="name1" placeholder="Enter Player 1 Name" />
+      <input id="name2" placeholder="Enter Player 2 Name" />
+      <button onclick="startGame()">Start Game</button>
+    </div>
 
-    <label for="bet">Choose your bet:</label><br>
-    <select id="bet">
-      <option value="Heads">Heads</option>
-      <option value="Tails">Tails</option>
-    </select><br>
+    <div id="gameSection" class="hidden">
+      <div class="coin" id="coinDisplay">💰</div>
 
-    <button id="flipButton" onclick="flipCoin()">Flip Coin</button>
-    <button id="playAgain" onclick="nextTurn()">Play Again</button>
+      <div class="player-indicator" id="playerIndicator">Player 1's turn</div>
 
-    <p id="result">Pick a side and flip the coin!</p>
+      <label for="bet">Choose your bet:</label><br>
+      <select id="bet">
+        <option value="Heads">Heads</option>
+        <option value="Tails">Tails</option>
+      </select><br>
 
-    <div class="scoreboard" id="scoreboard"></div>
+      <button id="flipButton" onclick="flipCoin()">Flip Coin</button>
+      <button id="playAgain" onclick="nextTurn()">Next Turn</button>
+      <button onclick="resetStats()" style="background-color:#f44336;color:white;">Reset Stats</button>
+
+      <p id="result">Pick a side and flip the coin!</p>
+
+      <div class="scoreboard" id="scoreboard"></div>
+    </div>
   </div>
 
   <script>
-    const coinImage = document.getElementById("coinImage");
+    const coinDisplay = document.getElementById("coinDisplay");
     const resultText = document.getElementById("result");
     const playerIndicator = document.getElementById("playerIndicator");
     const scoreboard = document.getElementById("scoreboard");
     const flipButton = document.getElementById("flipButton");
     const playAgainBtn = document.getElementById("playAgain");
+    const nameInputs = document.getElementById("nameInputs");
+    const gameSection = document.getElementById("gameSection");
 
-    let currentPlayer = 0; // 0 = Player 1, 1 = Player 2
-    const players = ["Player 1", "Player 2"];
+    let currentPlayer = 0; // 0 or 1
+    let playerNames = ["Player 1", "Player 2"];
 
-    // Load or initialize stats
-    const stats = JSON.parse(localStorage.getItem("coinGameStats")) || {
+    let stats = JSON.parse(localStorage.getItem("coinGameStats")) || {
       player1: { wins: 0, losses: 0 },
       player2: { wins: 0, losses: 0 },
       totalPlays: 0
     };
 
+    function startGame() {
+      const name1 = document.getElementById("name1").value.trim();
+      const name2 = document.getElementById("name2").value.trim();
+      playerNames[0] = name1 || "Player 1";
+      playerNames[1] = name2 || "Player 2";
+
+      nameInputs.classList.add("hidden");
+      gameSection.classList.remove("hidden");
+
+      updateScoreboard();
+      updatePlayerIndicator();
+    }
+
+    function updatePlayerIndicator() {
+      playerIndicator.textContent = `${playerNames[currentPlayer]}'s turn`;
+    }
+
     function updateScoreboard() {
       scoreboard.innerHTML = `
-        Player 1 - Wins: ${stats.player1.wins}, Losses: ${stats.player1.losses} <br>
-        Player 2 - Wins: ${stats.player2.wins}, Losses: ${stats.player2.losses} <br>
+        ${playerNames[0]} - Wins: ${stats.player1.wins}, Losses: ${stats.player1.losses}<br>
+        ${playerNames[1]} - Wins: ${stats.player2.wins}, Losses: ${stats.player2.losses}<br>
         Total Plays: ${stats.totalPlays}
       `;
     }
 
     function flipCoin() {
       const userBet = document.getElementById("bet").value;
-
       const isHeads = Math.random() < 0.5;
       const result = isHeads ? "Heads" : "Tails";
 
-      // Animate
-      coinImage.style.transform = "rotateY(360deg)";
+      // Animate coin (rotate effect)
+      coinDisplay.style.transform = "rotateY(360deg)";
       setTimeout(() => {
-        coinImage.src = isHeads
-          ? "https://i.imgur.com/5nmEqzN.png"
-          : "https://i.imgur.com/MZcMZlv.png";
-        coinImage.style.transform = "rotateY(0deg)";
+        coinDisplay.textContent = isHeads ? "🙂" : "🐍";
+        coinDisplay.style.transform = "rotateY(0deg)";
 
-        const currentStats = currentPlayer === 0 ? stats.player1 : stats.player2;
+        const key = currentPlayer === 0 ? "player1" : "player2";
+        const playerName = playerNames[currentPlayer];
+
         if (userBet === result) {
-          currentStats.wins++;
-          resultText.innerHTML = `${players[currentPlayer]} guessed <b>${userBet}</b>. It's <b>${result}</b>! <span class="highlight">You win!</span>`;
+          stats[key].wins++;
+          resultText.innerHTML = `${playerName} guessed <b>${userBet}</b>. It was <b>${result}</b>! <span class="highlight">You win!</span>`;
         } else {
-          currentStats.losses++;
-          resultText.innerHTML = `${players[currentPlayer]} guessed <b>${userBet}</b>. It's <b>${result}</b>! 😢 You lose.`;
+          stats[key].losses++;
+          resultText.innerHTML = `${playerName} guessed <b>${userBet}</b>. It was <b>${result}</b>. 😢 You lose.`;
         }
 
         stats.totalPlays++;
@@ -134,13 +170,23 @@
 
     function nextTurn() {
       currentPlayer = (currentPlayer + 1) % 2;
-      playerIndicator.textContent = `${players[currentPlayer]}'s turn`;
+      updatePlayerIndicator();
       resultText.textContent = "Pick a side and flip the coin!";
+      coinDisplay.textContent = "💰";
       flipButton.style.display = "inline-block";
       playAgainBtn.style.display = "none";
     }
 
-    updateScoreboard();
+    function resetStats() {
+      localStorage.removeItem("coinGameStats");
+      stats = {
+        player1: { wins: 0, losses: 0 },
+        player2: { wins: 0, losses: 0 },
+        totalPlays: 0
+      };
+      updateScoreboard();
+      resultText.textContent = "Stats reset! Flip to play again.";
+    }
   </script>
 </body>
 </html>
