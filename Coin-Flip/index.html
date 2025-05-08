@@ -323,6 +323,32 @@
       transition: transform 1.5s ease-out;
     }
 
+    .coin.flip, .coin.flip-tails {
+      animation: coinFlip 1.5s ease-out forwards;
+    }
+
+    .coin.flip-tails {
+      animation-name: coinFlipTails;
+    }
+
+    @keyframes coinFlip {
+      0% { transform: rotateY(0) rotateX(0); }
+      20% { transform: rotateY(180deg) rotateX(40deg); }
+      40% { transform: rotateY(360deg) rotateX(-40deg); }
+      60% { transform: rotateY(540deg) rotateX(40deg); }
+      80% { transform: rotateY(720deg) rotateX(-40deg); }
+      100% { transform: rotateY(1800deg) rotateX(0); }
+    }
+
+    @keyframes coinFlipTails {
+      0% { transform: rotateY(0) rotateX(0); }
+      20% { transform: rotateY(180deg) rotateX(40deg); }
+      40% { transform: rotateY(360deg) rotateX(-40deg); }
+      60% { transform: rotateY(540deg) rotateX(40deg); }
+      80% { transform: rotateY(720deg) rotateX(-40deg); }
+      100% { transform: rotateY(1980deg) rotateX(0); }
+    }
+
     .coin-side {
       position: absolute;
       width: 100%;
@@ -706,7 +732,7 @@
       players[1].bet = document.querySelector('input[name="player2Bet"]:checked').value;
       
       // Clear previous results
-      document.getElementById('resultMessage').textContent = '';
+      document.getElementById('resultMessage').textContent = 'Flipping...';
       document.getElementById('resultDetails').textContent = '';
       
       // Disable flip button during animation
@@ -717,28 +743,32 @@
       const coins = document.querySelectorAll('.coin');
       const results = [];
       
-      // Flip each coin
-      coins.forEach((coin, index) => {
-        // Determine result (50/50 chance)
-        const result = Math.random() < 0.5 ? 'heads' : 'tails';
-        results.push(result);
-        
-        // Add flip animation
-        setTimeout(() => {
-          coin.className = 'coin';
-          void coin.offsetWidth; // Force reflow
-          coin.classList.add(result === 'heads' ? 'flip' : 'flip-tails');
-          
-          // If last coin, check results after animation
-          if (index === coins.length - 1) {
-            setTimeout(() => {
-              checkResults(results);
-              isFlipping = false;
-              document.getElementById('flipBtn').disabled = false;
-            }, 1500);
-          }
-        }, index * 300);
+      // Reset all coins first to ensure animation plays every time
+      coins.forEach(coin => {
+        coin.className = 'coin';
       });
+      
+      // Force reflow to ensure animation restarts
+      void document.getElementById('coinContainer').offsetWidth;
+      
+      // Flip each coin simultaneously
+      setTimeout(() => {
+        coins.forEach((coin, index) => {
+          // Determine result (50/50 chance)
+          const result = Math.random() < 0.5 ? 'heads' : 'tails';
+          results.push(result);
+          
+          // Add flip animation
+          coin.classList.add(result === 'heads' ? 'flip' : 'flip-tails');
+        });
+        
+        // Check results after animation completes
+        setTimeout(() => {
+          checkResults(results);
+          isFlipping = false;
+          document.getElementById('flipBtn').disabled = false;
+        }, 1600);
+      }, 50);
     }
     
     // Check results and update scores
