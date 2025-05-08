@@ -17,8 +17,14 @@
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      max-width: 500px;
+      max-width: 800px;
       margin: auto;
+    }
+
+    #setup, #game {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     input, select, button {
@@ -52,17 +58,43 @@
     }
 
     .scoreboard {
-      margin-top: 20px;
       font-size: 18px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Flex container for the game */
+    .game-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .player {
+      text-align: center;
+      width: 30%;
+    }
+
+    .coin-container {
+      text-align: center;
+      width: 30%;
+    }
+
+    .bet-container {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .player-name {
+      font-weight: bold;
     }
 
     .result {
       font-weight: bold;
       margin-top: 10px;
-    }
-
-    .hidden {
-      display: none;
     }
   </style>
 </head>
@@ -79,29 +111,37 @@
     </div>
 
     <div id="game" class="hidden">
-      <p><strong id="turnText">Both players choose:</strong></p>
+      <div class="game-container">
+        <div class="player">
+          <p class="player-name" id="name1">Player 1</p>
+          <p id="score1">Score: 0</p>
+          <div class="bet-container">
+            <label>Guess:</label>
+            <select id="guess1">
+              <option value="Heads">Heads</option>
+              <option value="Tails">Tails</option>
+            </select>
+          </div>
+        </div>
 
-      <div>
-        <label><span id="name1">Player 1</span>'s Guess:</label>
-        <select id="guess1">
-          <option value="Heads">Heads</option>
-          <option value="Tails">Tails</option>
-        </select>
-      </div>
+        <div class="coin-container">
+          <div class="coin" id="coin1">🪙</div>
+        </div>
 
-      <div>
-        <label><span id="name2">Player 2</span>'s Guess:</label>
-        <select id="guess2">
-          <option value="Heads">Heads</option>
-          <option value="Tails">Tails</option>
-        </select>
+        <div class="player">
+          <p class="player-name" id="name2">Player 2</p>
+          <p id="score2">Score: 0</p>
+          <div class="bet-container">
+            <label>Guess:</label>
+            <select id="guess2">
+              <option value="Heads">Heads</option>
+              <option value="Tails">Tails</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <button onclick="flip()">Flip Coins</button>
-
-      <div id="coinsContainer">
-        <div class="coin" id="coin1">🪙</div>
-      </div>
 
       <p class="result" id="resultText">Choose and flip!</p>
 
@@ -121,7 +161,7 @@
       const p2 = document.getElementById("player2").value.trim();
       names[0] = p1 || "Player 1";
       names[1] = p2 || "Player 2";
-      
+
       numCoins = parseInt(document.getElementById("numCoins").value);
 
       document.getElementById("name1").textContent = names[0];
@@ -148,7 +188,7 @@
         coinElement.classList.add("coin");
         coinElement.id = `coin${i}`;
         coinElement.textContent = "🪙";
-        document.getElementById("coinsContainer").appendChild(coinElement);
+        document.getElementById("coin1").appendChild(coinElement);
 
         coinElement.classList.add("flip");
         setTimeout(() => {
@@ -178,8 +218,8 @@
     }
 
     function updateScoreboard() {
-      const board = document.getElementById("scoreboard");
-      board.innerHTML = `${names[0]}: ${scores[0]} pts<br>${names[1]}: ${scores[1]} pts`;
+      document.getElementById("score1").textContent = `${names[0]} Score: ${scores[0]}`;
+      document.getElementById("score2").textContent = `${names[1]} Score: ${scores[1]}`;
 
       // Check for winner
       if (scores[0] >= targetScore) {
@@ -198,7 +238,7 @@
       document.getElementById("numCoins").value = "1";
       document.getElementById("setup").classList.remove("hidden");
       document.getElementById("game").classList.add("hidden");
-      document.getElementById("coinsContainer").innerHTML = "<div class='coin' id='coin1'>🪙</div>";
+      document.getElementById("coin1").innerHTML = "🪙";
       document.getElementById("resultText").textContent = "Choose and flip!";
       document.querySelector("button").disabled = false; // Enable button for new game
     }
