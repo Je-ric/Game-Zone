@@ -17,7 +17,7 @@
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      max-width: 400px;
+      max-width: 500px;
       margin: auto;
     }
 
@@ -34,19 +34,21 @@
       color: white;
       border: none;
       border-radius: 5px;
+      transition: background-color 0.3s;
     }
 
     button:hover {
       background-color: #0056b3;
     }
 
-    .hidden {
-      display: none;
+    .coin {
+      font-size: 100px;
+      margin: 20px 0;
+      transition: transform 1s ease-out;
     }
 
-    .coin {
-      font-size: 70px;
-      margin: 20px 0;
+    .coin.flip {
+      transform: rotateY(1800deg);
     }
 
     .scoreboard {
@@ -57,6 +59,10 @@
     .result {
       font-weight: bold;
       margin-top: 10px;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
@@ -102,6 +108,7 @@
   <script>
     let names = ["Player 1", "Player 2"];
     let scores = [0, 0];
+    const targetScore = 5;
 
     function startGame() {
       const p1 = document.getElementById("player1").value.trim();
@@ -119,34 +126,51 @@
     }
 
     function flip() {
+      // Disable the button after a winner is found
+      if (scores[0] >= targetScore || scores[1] >= targetScore) return;
+
       const guess1 = document.getElementById("guess1").value;
       const guess2 = document.getElementById("guess2").value;
       const result = Math.random() < 0.5 ? "Heads" : "Tails";
 
       const coin = document.getElementById("coin");
-      const resultText = document.getElementById("resultText");
-      coin.textContent = result === "Heads" ? "🙂" : "🐍";
+      coin.classList.add('flip');
+      
+      // Wait for the animation to finish, then update the result
+      setTimeout(() => {
+        coin.classList.remove('flip');
+        coin.textContent = result === "Heads" ? "🙂" : "🐍";
 
-      let message = `It was ${result}!<br>`;
-      if (guess1 === result) {
-        scores[0]++;
-        message += `${names[0]} guessed right!<br>`;
-      }
-      if (guess2 === result) {
-        scores[1]++;
-        message += `${names[1]} guessed right!<br>`;
-      }
-      if (guess1 !== result && guess2 !== result) {
-        message += `No one guessed correctly.`;
-      }
+        let message = `It was ${result}!<br>`;
+        if (guess1 === result) {
+          scores[0]++;
+          message += `${names[0]} guessed right!<br>`;
+        }
+        if (guess2 === result) {
+          scores[1]++;
+          message += `${names[1]} guessed right!<br>`;
+        }
+        if (guess1 !== result && guess2 !== result) {
+          message += `No one guessed correctly.`;
+        }
 
-      resultText.innerHTML = message;
-      updateScoreboard();
+        resultText.innerHTML = message;
+        updateScoreboard();
+      }, 1000); // Animation duration
     }
 
     function updateScoreboard() {
       const board = document.getElementById("scoreboard");
       board.innerHTML = `${names[0]}: ${scores[0]} pts<br>${names[1]}: ${scores[1]} pts`;
+
+      // Check for winner
+      if (scores[0] >= targetScore) {
+        document.getElementById("resultText").innerHTML = `${names[0]} wins! Congratulations!`;
+        document.querySelector("button").disabled = true; // Disable button after game ends
+      } else if (scores[1] >= targetScore) {
+        document.getElementById("resultText").innerHTML = `${names[1]} wins! Congratulations!`;
+        document.querySelector("button").disabled = true;
+      }
     }
 
     function restart() {
@@ -157,6 +181,7 @@
       document.getElementById("game").classList.add("hidden");
       document.getElementById("coin").textContent = "🪙";
       document.getElementById("resultText").textContent = "Choose and flip!";
+      document.querySelector("button").disabled = false; // Enable button for new game
     }
   </script>
 </body>
