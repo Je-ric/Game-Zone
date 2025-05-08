@@ -157,19 +157,25 @@
     let numCoins = 1;
 
     function startGame() {
-      const p1 = document.getElementById("player1").value.trim();
-      const p2 = document.getElementById("player2").value.trim();
-      names[0] = p1 || "Player 1";
-      names[1] = p2 || "Player 2";
+      // Get names from the input fields, defaulting to "Player 1" and "Player 2" if empty
+      const p1 = document.getElementById("player1").value.trim() || "Player 1";
+      const p2 = document.getElementById("player2").value.trim() || "Player 2";
+      
+      names[0] = p1;
+      names[1] = p2;
 
-      numCoins = parseInt(document.getElementById("numCoins").value);
-
+      // Update player names on the game screen
       document.getElementById("name1").textContent = names[0];
       document.getElementById("name2").textContent = names[1];
 
+      // Get the number of coins for the game
+      numCoins = parseInt(document.getElementById("numCoins").value);
+
+      // Hide the setup and show the game section
       document.getElementById("setup").classList.add("hidden");
       document.getElementById("game").classList.remove("hidden");
 
+      // Update the scoreboard
       updateScoreboard();
     }
 
