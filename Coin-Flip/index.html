@@ -1,200 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>2-Player Coin Flip Game</title>
+  <meta charset="UTF-8">
+  <title>Simple Coin Flip Game</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
+      background: #f0f0f0;
       text-align: center;
-      background-color: #f0f0f0;
-      padding: 40px;
+      padding: 30px;
     }
 
     .container {
       background: white;
-      padding: 30px;
+      padding: 20px;
       border-radius: 10px;
       display: inline-block;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      max-width: 450px;
+      width: 320px;
     }
 
     .coin {
       font-size: 80px;
-      margin: 20px auto;
-      transition: transform 0.6s ease-in-out;
+      margin: 20px 0;
     }
 
     input, select, button {
-      padding: 10px;
+      padding: 8px;
+      margin: 10px 0;
       font-size: 16px;
-      margin-top: 10px;
-      margin-bottom: 10px;
+      width: 90%;
     }
 
     .scoreboard {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-
-    #playAgain {
-      display: none;
       margin-top: 15px;
-    }
-
-    .player-indicator {
-      font-weight: bold;
-      margin: 15px 0;
-    }
-
-    .highlight {
-      color: green;
-    }
-
-    .name-inputs {
-      margin-bottom: 20px;
     }
 
     .hidden {
       display: none;
     }
+
+    .result {
+      font-weight: bold;
+      margin: 10px 0;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🪙 2-Player Coin Flip Game</h1>
+    <h2>🪙 Coin Flip Game</h2>
 
-    <div class="name-inputs" id="nameInputs">
-      <input id="name1" placeholder="Enter Player 1 Name" />
-      <input id="name2" placeholder="Enter Player 2 Name" />
+    <div id="setup">
+      <input id="player1" placeholder="Player 1 Name" />
+      <input id="player2" placeholder="Player 2 Name" />
       <button onclick="startGame()">Start Game</button>
     </div>
 
-    <div id="gameSection" class="hidden">
-      <div class="coin" id="coinDisplay">💰</div>
+    <div id="game" class="hidden">
+      <div class="coin" id="coin">💰</div>
 
-      <div class="player-indicator" id="playerIndicator">Player 1's turn</div>
-
-      <label for="bet">Choose your bet:</label><br>
+      <p id="turnText"></p>
       <select id="bet">
         <option value="Heads">Heads</option>
         <option value="Tails">Tails</option>
       </select><br>
-
-      <button id="flipButton" onclick="flipCoin()">Flip Coin</button>
-      <button id="playAgain" onclick="nextTurn()">Next Turn</button>
-      <button onclick="restartGame()" style="background-color:#f44336;color:white;">Restart Game</button>
-
-      <p id="result">Pick a side and flip the coin!</p>
+      <button onclick="flip()">Flip Coin</button>
+      <p class="result" id="resultText">Choose and flip!</p>
 
       <div class="scoreboard" id="scoreboard"></div>
+      <button onclick="nextTurn()">Next Turn</button>
+      <button onclick="restart()">Restart Game</button>
     </div>
   </div>
 
   <script>
-    const coinDisplay = document.getElementById("coinDisplay");
-    const resultText = document.getElementById("result");
-    const playerIndicator = document.getElementById("playerIndicator");
-    const scoreboard = document.getElementById("scoreboard");
-    const flipButton = document.getElementById("flipButton");
-    const playAgainBtn = document.getElementById("playAgain");
-    const nameInputs = document.getElementById("nameInputs");
-    const gameSection = document.getElementById("gameSection");
-
-    let currentPlayer = 0; // 0 or 1
-    let playerNames = ["Player 1", "Player 2"];
-
-    let stats = {
-      player1: { wins: 0, losses: 0 },
-      player2: { wins: 0, losses: 0 },
-      totalPlays: 0
-    };
+    let names = ["Player 1", "Player 2"];
+    let scores = [0, 0];
+    let turn = 0;
 
     function startGame() {
-      const name1 = document.getElementById("name1").value.trim();
-      const name2 = document.getElementById("name2").value.trim();
-      playerNames[0] = name1 || "Player 1";
-      playerNames[1] = name2 || "Player 2";
+      const p1 = document.getElementById("player1").value.trim();
+      const p2 = document.getElementById("player2").value.trim();
+      names[0] = p1 || "Player 1";
+      names[1] = p2 || "Player 2";
 
-      nameInputs.classList.add("hidden");
-      gameSection.classList.remove("hidden");
+      document.getElementById("setup").classList.add("hidden");
+      document.getElementById("game").classList.remove("hidden");
 
+      updateTurnText();
       updateScoreboard();
-      updatePlayerIndicator();
     }
 
-    function updatePlayerIndicator() {
-      playerIndicator.textContent = `${playerNames[currentPlayer]}'s turn`;
+    function updateTurnText() {
+      document.getElementById("turnText").textContent = `${names[turn]}'s Turn`;
     }
 
     function updateScoreboard() {
-      scoreboard.innerHTML = `
-        ${playerNames[0]} - Wins: ${stats.player1.wins}, Losses: ${stats.player1.losses}<br>
-        ${playerNames[1]} - Wins: ${stats.player2.wins}, Losses: ${stats.player2.losses}<br>
-        Total Plays: ${stats.totalPlays}
-      `;
+      document.getElementById("scoreboard").innerHTML =
+        `${names[0]}: ${scores[0]} wins<br>${names[1]}: ${scores[1]} wins`;
     }
 
-    function flipCoin() {
-      const userBet = document.getElementById("bet").value;
-      const isHeads = Math.random() < 0.5;
-      const result = isHeads ? "Heads" : "Tails";
+    function flip() {
+      const userGuess = document.getElementById("bet").value;
+      const result = Math.random() < 0.5 ? "Heads" : "Tails";
+      const coin = document.getElementById("coin");
+      const resultText = document.getElementById("resultText");
 
-      coinDisplay.style.transform = "rotateY(360deg)";
-      setTimeout(() => {
-        coinDisplay.textContent = isHeads ? "🙂" : "🐍";
-        coinDisplay.style.transform = "rotateY(0deg)";
+      coin.textContent = result === "Heads" ? "🙂" : "🐍";
 
-        const key = currentPlayer === 0 ? "player1" : "player2";
-        const playerName = playerNames[currentPlayer];
+      if (userGuess === result) {
+        resultText.textContent = `Correct! It was ${result}. ${names[turn]} scores!`;
+        scores[turn]++;
+      } else {
+        resultText.textContent = `Wrong! It was ${result}.`;
+      }
 
-        if (userBet === result) {
-          stats[key].wins++;
-          resultText.innerHTML = `${playerName} guessed <b>${userBet}</b>. It was <b>${result}</b>! <span class="highlight">You win!</span>`;
-        } else {
-          stats[key].losses++;
-          resultText.innerHTML = `${playerName} guessed <b>${userBet}</b>. It was <b>${result}</b>. 😢 You lose.`;
-        }
-
-        stats.totalPlays++;
-        updateScoreboard();
-
-        flipButton.style.display = "none";
-        playAgainBtn.style.display = "inline-block";
-      }, 600);
+      updateScoreboard();
     }
 
     function nextTurn() {
-      currentPlayer = (currentPlayer + 1) % 2;
-      updatePlayerIndicator();
-      resultText.textContent = "Pick a side and flip the coin!";
-      coinDisplay.textContent = "💰";
-      flipButton.style.display = "inline-block";
-      playAgainBtn.style.display = "none";
+      turn = (turn + 1) % 2;
+      document.getElementById("coin").textContent = "💰";
+      document.getElementById("resultText").textContent = "Choose and flip!";
+      updateTurnText();
     }
 
-    function restartGame() {
-      // Reset all game state
-      stats = {
-        player1: { wins: 0, losses: 0 },
-        player2: { wins: 0, losses: 0 },
-        totalPlays: 0
-      };
-
-      playerNames = ["Player 1", "Player 2"];
-      currentPlayer = 0;
-
-      // Reset UI
-      nameInputs.classList.remove("hidden");
-      gameSection.classList.add("hidden");
-      document.getElementById("name1").value = "";
-      document.getElementById("name2").value = "";
-      resultText.textContent = "Pick a side and flip the coin!";
-      coinDisplay.textContent = "💰";
-      flipButton.style.display = "inline-block";
-      playAgainBtn.style.display = "none";
+    function restart() {
+      scores = [0, 0];
+      turn = 0;
+      document.getElementById("player1").value = "";
+      document.getElementById("player2").value = "";
+      document.getElementById("game").classList.add("hidden");
+      document.getElementById("setup").classList.remove("hidden");
     }
   </script>
 </body>
