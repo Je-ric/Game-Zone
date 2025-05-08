@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Coin Flip Game</title>
+  <title>Coin Flip Bet Game</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      background-color: #f5f5f5;
+      background-color: #f0f0f0;
       padding: 50px;
     }
 
@@ -21,35 +21,78 @@
     }
 
     .coin {
-      font-size: 80px;
-      margin: 20px 0;
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+      transition: transform 0.6s ease-in-out;
     }
 
     button {
       padding: 10px 20px;
       font-size: 18px;
+      margin: 10px;
       cursor: pointer;
+    }
+
+    select {
+      font-size: 16px;
+      padding: 5px;
+    }
+
+    #result {
+      font-weight: bold;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Heads or Tails?</h1>
-    <div class="coin" id="coin">🪙</div>
+    <h1>Heads or Tails - Bet Game</h1>
+    <img id="coinImage" class="coin" src="https://i.imgur.com/5nmEqzN.png" alt="Coin" />
+    
+    <div>
+      <label for="bet">Your bet:</label>
+      <select id="bet">
+        <option value="Heads">Heads</option>
+        <option value="Tails">Tails</option>
+      </select>
+    </div>
+    
     <button onclick="flipCoin()">Flip Coin</button>
-    <p id="result">Click the button to flip!</p>
+    <p id="result">Choose your bet and flip the coin!</p>
   </div>
 
-  <!-- JavaScript should be inline or use a separate file, not both -->
   <script>
     function flipCoin() {
+      const userBet = document.getElementById("bet").value;
       const resultText = document.getElementById("result");
-      const coin = document.getElementById("coin");
+      const coinImage = document.getElementById("coinImage");
 
-      const result = Math.random() < 0.5 ? "Heads" : "Tails";
-      resultText.textContent = "It's " + result + "!";
+      // Simulate a coin flip
+      const isHeads = Math.random() < 0.5;
+      const result = isHeads ? "Heads" : "Tails";
 
-      coin.textContent = result === "Heads" ? "🙂" : "🐍";
+      // Animate flip
+      coinImage.style.transform = "rotateY(360deg)";
+
+      // After flip delay
+      setTimeout(() => {
+        coinImage.src = isHeads
+          ? "https://i.imgur.com/5nmEqzN.png" // heads image
+          : "https://i.imgur.com/MZcMZlv.png"; // tails image
+
+        // Reset rotation
+        coinImage.style.transform = "rotateY(0deg)";
+
+        // Check if user wins
+        if (userBet === result) {
+          resultText.textContent = `It's ${result}! You win 🎉`;
+          resultText.style.color = "green";
+        } else {
+          resultText.textContent = `It's ${result}! You lose 😢`;
+          resultText.style.color = "red";
+        }
+      }, 600);
     }
   </script>
 </body>
