@@ -3,287 +3,851 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Heads or Tails Game</title>
+  <title>Coin Flip Challenge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
+    :root {
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --secondary-light: #f472b6;
+      --secondary-dark: #db2777;
+      --accent: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --neutral-50: #f8fafc;
+      --neutral-100: #f1f5f9;
+      --neutral-200: #e2e8f0;
+      --neutral-300: #cbd5e1;
+      --neutral-400: #94a3b8;
+      --neutral-500: #64748b;
+      --neutral-600: #475569;
+      --neutral-700: #334155;
+      --neutral-800: #1e293b;
+      --neutral-900: #0f172a;
+      --radius-sm: 0.375rem;
+      --radius: 0.5rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, var(--neutral-100), var(--neutral-200));
+      color: var(--neutral-800);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      flex-direction: column;
+      padding: 1.5rem;
     }
 
     .container {
       background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      max-width: 100%;
-      width: 80%;
-      height: 90%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      overflow-y: auto;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 900px;
+      overflow: hidden;
+      position: relative;
     }
 
-    #setup, #game {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    input, select, button {
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 16px;
-      width: 90%;
-    }
-
-    button {
-      cursor: pointer;
-      background-color: #007bff;
+    .header {
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
       color: white;
-      border: none;
-      border-radius: 5px;
-      transition: background-color 0.3s;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
     }
 
-    button:hover {
-      background-color: #0056b3;
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 2rem;
+    }
+
+    /* Game Setup Section */
+    #setup {
+      text-align: center;
+    }
+
+    .mode-selection {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .mode-card {
+      background-color: var(--neutral-50);
+      border: 2px solid var(--neutral-200);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      width: 200px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    .mode-card.selected {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+      color: white;
+    }
+
+    .mode-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .mode-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .mode-description {
+      font-size: 0.875rem;
+      color: var(--neutral-600);
+    }
+
+    .mode-card.selected .mode-description {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Game Section */
+    #game {
+      display: none;
+    }
+
+    .game-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+
+    .target-score {
+      background-color: var(--neutral-50);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .game-mode {
+      background-color: var(--neutral-50);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      color: var(--secondary);
+    }
+
+    .players-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .player-card {
+      background-color: var(--neutral-50);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .player-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+    }
+
+    .player-card:nth-child(1)::before {
+      background-color: var(--primary);
+    }
+
+    .player-card:nth-child(2)::before {
+      background-color: var(--secondary);
+    }
+
+    .player-name-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--neutral-300);
+      border-radius: var(--radius-sm);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .player-name-input:focus {
+      border-color: var(--primary);
+    }
+
+    .player-score {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .player-card:nth-child(1) .player-score {
+      color: var(--primary);
+    }
+
+    .player-card:nth-child(2) .player-score {
+      color: var(--secondary);
+    }
+
+    .bet-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .bet-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .bet-option input[type="radio"] {
+      appearance: none;
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 2px solid var(--neutral-400);
+      border-radius: 50%;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .bet-option:nth-child(1) input[type="radio"]:checked {
+      border-color: var(--primary);
+    }
+
+    .bet-option:nth-child(2) input[type="radio"]:checked {
+      border-color: var(--secondary);
+    }
+
+    .bet-option:nth-child(3) input[type="radio"]:checked {
+      border-color: var(--accent);
+    }
+
+    .bet-option input[type="radio"]:checked::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 0.625rem;
+      height: 0.625rem;
+      border-radius: 50%;
+    }
+
+    .bet-option:nth-child(1) input[type="radio"]:checked::after {
+      background-color: var(--primary);
+    }
+
+    .bet-option:nth-child(2) input[type="radio"]:checked::after {
+      background-color: var(--secondary);
+    }
+
+    .bet-option:nth-child(3) input[type="radio"]:checked::after {
+      background-color: var(--accent);
+    }
+
+    .bet-option label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .bet-icon {
+      font-size: 1.25rem;
+    }
+
+    /* Coin Flip Area */
+    .coin-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .coin-container {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 2rem 0;
     }
 
     .coin {
-      font-size: 60px;
-      margin: 5px;
-      display: inline-block;
-      transition: transform 1s ease-out;
+      width: 100px;
+      height: 100px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1.5s ease-out;
+    }
+
+    .coin-side {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      backface-visibility: hidden;
+    }
+
+    .heads {
+      background: linear-gradient(135deg, #ffd700, #ffb700);
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+      z-index: 2;
+    }
+
+    .tails {
+      background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+      transform: rotateY(180deg);
     }
 
     .coin.flip {
       transform: rotateY(1800deg);
     }
 
-    .scoreboard {
-      font-size: 18px;
+    .coin.flip-tails {
+      transform: rotateY(1980deg);
     }
 
-    .hidden {
-      display: none;
-    }
-
-    .game-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      margin-top: 20px;
-    }
-
-    .player {
+    .result-message {
+      font-size: 1.25rem;
+      font-weight: 600;
       text-align: center;
-      width: 30%;
+      min-height: 2rem;
+      margin-bottom: 1rem;
     }
 
-    .coin-container {
+    .result-details {
       text-align: center;
-      width: 30%;
+      color: var(--neutral-600);
+      margin-bottom: 1rem;
+    }
+
+    /* Buttons */
+    .button-container {
       display: flex;
       justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
     }
 
-    .bet-container {
-      text-align: center;
-      margin-top: 10px;
+    .btn {
+      padding: 0.875rem 1.5rem;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
 
-    .player-name {
-      font-weight: bold;
-      font-size: 20px;
+    .btn-primary {
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
+      color: white;
+      box-shadow: var(--shadow);
     }
 
-    .result {
-      font-weight: bold;
-      margin-top: 10px;
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
 
-    .coin-options {
-      margin-top: 20px;
+    .btn-secondary {
+      background: linear-gradient(to right, var(--secondary), var(--secondary-dark));
+      color: white;
+      box-shadow: var(--shadow);
     }
 
-    .coin-option-label {
-      font-size: 16px;
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--neutral-400);
+      color: var(--neutral-700);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--neutral-100);
+    }
+
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Winner Animation */
+    @keyframes winner {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .winner {
+      animation: winner 1s ease infinite;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.75rem;
+      }
+
+      .content {
+        padding: 1.5rem;
+      }
+
+      .mode-selection {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .mode-card {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .players-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .coin {
+        width: 80px;
+        height: 80px;
+      }
+
+      .coin-side {
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Heads or Tails Game</h2>
-
-    <div id="setup">
-      <div class="coin-options">
-        <label class="coin-option-label">Number of Coins:</label>
-        <div>
-          <input type="radio" id="oneCoin" name="numCoins" value="1" checked>
-          <label for="oneCoin">1</label>
-          <input type="radio" id="twoCoins" name="numCoins" value="2">
-          <label for="twoCoins">2</label>
-          <input type="radio" id="threeCoins" name="numCoins" value="3">
-          <label for="threeCoins">3</label>
-        </div>
-      </div>
-      <button onclick="startGame()">Start Game</button>
+    <div class="header">
+      <h1>Coin Flip Challenge</h1>
+      <p>Test your luck and prediction skills!</p>
     </div>
 
-    <div id="game" class="hidden">
-      <div class="game-container">
-        <div class="player">
-          <input type="text" class="player-name" id="name1" value="Player 1" />
-          <p id="score1">Score: 0</p>
-          <div class="bet-container">
-            <label>Guess:</label>
-            <select id="guess1">
-              <option value="Heads">Heads</option>
-              <option value="Tails">Tails</option>
-            </select>
+    <div class="content">
+      <!-- Game Setup Section -->
+      <div id="setup">
+        <h2>Select Game Mode</h2>
+        
+        <div class="mode-selection">
+          <div class="mode-card" data-mode="single" onclick="selectMode('single')">
+            <div class="mode-icon">🪙</div>
+            <div class="mode-title">Single Coin</div>
+            <div class="mode-description">Classic heads or tails. Simple and fun!</div>
+          </div>
+          
+          <div class="mode-card" data-mode="double" onclick="selectMode('double')">
+            <div class="mode-icon">🪙🪙</div>
+            <div class="mode-title">Double Coin</div>
+            <div class="mode-description">Bet on two heads, two tails, or one of each!</div>
           </div>
         </div>
-
-        <div class="coin-container">
-          <!-- Coins will be placed here in a row -->
-        </div>
-
-        <div class="player">
-          <input type="text" class="player-name" id="name2" value="Player 2" />
-          <p id="score2">Score: 0</p>
-          <div class="bet-container">
-            <label>Guess:</label>
-            <select id="guess2">
-              <option value="Heads">Heads</option>
-              <option value="Tails">Tails</option>
-            </select>
-          </div>
+        
+        <div class="button-container">
+          <button class="btn btn-primary" id="startGameBtn" onclick="startGame()" disabled>Start Game</button>
         </div>
       </div>
 
-      <button onclick="flip()">Flip Coins</button>
-
-      <p class="result" id="resultText">Choose and flip!</p>
-
-      <div class="scoreboard" id="scoreboard"></div>
-      <button onclick="restart()">Restart Game</button>
+      <!-- Game Section -->
+      <div id="game">
+        <div class="game-info">
+          <div class="target-score">First to 5 points wins!</div>
+          <div class="game-mode" id="currentMode">Single Coin Mode</div>
+        </div>
+        
+        <div class="players-container">
+          <div class="player-card">
+            <input type="text" class="player-name-input" id="player1Name" placeholder="Player 1 Name" value="Player 1">
+            <div class="player-score" id="player1Score">0</div>
+            
+            <div class="bet-options" id="player1Options">
+              <!-- Options will be dynamically generated based on game mode -->
+            </div>
+          </div>
+          
+          <div class="player-card">
+            <input type="text" class="player-name-input" id="player2Name" placeholder="Player 2 Name" value="Player 2">
+            <div class="player-score" id="player2Score">0</div>
+            
+            <div class="bet-options" id="player2Options">
+              <!-- Options will be dynamically generated based on game mode -->
+            </div>
+          </div>
+        </div>
+        
+        <div class="coin-area">
+          <div class="coin-container" id="coinContainer">
+            <!-- Coins will be added here -->
+          </div>
+          
+          <div class="result-message" id="resultMessage"></div>
+          <div class="result-details" id="resultDetails"></div>
+        </div>
+        
+        <div class="button-container">
+          <button class="btn btn-primary" id="flipBtn" onclick="flipCoins()">Flip Coins</button>
+          <button class="btn btn-outline" onclick="resetGame()">New Game</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    let names = ["Player 1", "Player 2"];
-    let scores = [0, 0];
+    // Game variables
+    let gameMode = '';
+    let players = [
+      { name: 'Player 1', score: 0, bet: '' },
+      { name: 'Player 2', score: 0, bet: '' }
+    ];
     const targetScore = 5;
-    let numCoins = 1;
-
-    // Function to start the game
+    let isFlipping = false;
+    
+    // Select game mode
+    function selectMode(mode) {
+      gameMode = mode;
+      
+      // Update UI
+      document.querySelectorAll('.mode-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      document.querySelector(`.mode-card[data-mode="${mode}"]`).classList.add('selected');
+      
+      // Enable start button
+      document.getElementById('startGameBtn').disabled = false;
+    }
+    
+    // Start the game
     function startGame() {
-      // Get names from the input fields, defaulting to "Player 1" and "Player 2" if empty
-      const p1 = document.getElementById("name1").value.trim() || "Player 1";
-      const p2 = document.getElementById("name2").value.trim() || "Player 2";
-
-      names[0] = p1;
-      names[1] = p2;
-
-      // Update player names on the game screen
-      document.getElementById("name1").value = names[0];
-      document.getElementById("name2").value = names[1];
-
-      // Get the number of coins for the game based on selected radio
-      numCoins = parseInt(document.querySelector('input[name="numCoins"]:checked').value);
-
-      // Hide the setup and show the game section
-      document.getElementById("setup").classList.add("hidden");
-      document.getElementById("game").classList.remove("hidden");
-
-      // Clear coin container and update scoreboard
-      document.querySelector(".coin-container").innerHTML = '';
-      updateScoreboard();
+      // Update player names
+      players[0].name = document.getElementById('player1Name').value || 'Player 1';
+      players[1].name = document.getElementById('player2Name').value || 'Player 2';
+      
+      // Show game section, hide setup
+      document.getElementById('setup').style.display = 'none';
+      document.getElementById('game').style.display = 'block';
+      
+      // Update mode display
+      const modeText = gameMode === 'single' ? 'Single Coin Mode' : 'Double Coin Mode';
+      document.getElementById('currentMode').textContent = modeText;
+      
+      // Generate betting options based on game mode
+      generateBettingOptions();
+      
+      // Update player name inputs
+      document.getElementById('player1Name').value = players[0].name;
+      document.getElementById('player2Name').value = players[1].name;
+      
+      // Reset scores
+      players[0].score = 0;
+      players[1].score = 0;
+      updateScoreDisplay();
+      
+      // Clear result message
+      document.getElementById('resultMessage').textContent = '';
+      document.getElementById('resultDetails').textContent = '';
+      
+      // Create coin(s)
+      createCoins();
     }
-
-    // Function to flip the coins
-    function flip() {
-      if (scores[0] >= targetScore || scores[1] >= targetScore) return;
-
-      const guess1 = document.getElementById("guess1").value;
-      const guess2 = document.getElementById("guess2").value;
-
-      let coinsFlipped = 0;
-      let message = "";
-
-      for (let i = 1; i <= numCoins; i++) {
-        // Create new coin element for each flip
-        const coinElement = document.createElement("div");
-        coinElement.classList.add("coin");
-        coinElement.id = `coin${i}`;
-        coinElement.textContent = "🪙";
-        document.querySelector(".coin-container").appendChild(coinElement);
-
-        coinElement.classList.add("flip");
+    
+    // Generate betting options based on game mode
+    function generateBettingOptions() {
+      const player1Options = document.getElementById('player1Options');
+      const player2Options = document.getElementById('player2Options');
+      
+      player1Options.innerHTML = '';
+      player2Options.innerHTML = '';
+      
+      if (gameMode === 'single') {
+        // Single coin options
+        const options = [
+          { value: 'heads', label: 'Heads', icon: '👑' },
+          { value: 'tails', label: 'Tails', icon: '⚜️' }
+        ];
+        
+        options.forEach((option, index) => {
+          player1Options.innerHTML += `
+            <div class="bet-option">
+              <input type="radio" name="player1Bet" id="p1-${option.value}" value="${option.value}" ${index === 0 ? 'checked' : ''}>
+              <label for="p1-${option.value}">
+                <span class="bet-icon">${option.icon}</span>
+                ${option.label}
+              </label>
+            </div>
+          `;
+          
+          player2Options.innerHTML += `
+            <div class="bet-option">
+              <input type="radio" name="player2Bet" id="p2-${option.value}" value="${option.value}" ${index === 1 ? 'checked' : ''}>
+              <label for="p2-${option.value}">
+                <span class="bet-icon">${option.icon}</span>
+                ${option.label}
+              </label>
+            </div>
+          `;
+        });
+      } else {
+        // Double coin options
+        const options = [
+          { value: 'both-heads', label: 'Both Heads', icon: '👑👑' },
+          { value: 'both-tails', label: 'Both Tails', icon: '⚜️⚜️' },
+          { value: 'mixed', label: 'One of Each', icon: '👑⚜️' }
+        ];
+        
+        options.forEach((option, index) => {
+          player1Options.innerHTML += `
+            <div class="bet-option">
+              <input type="radio" name="player1Bet" id="p1-${option.value}" value="${option.value}" ${index === 0 ? 'checked' : ''}>
+              <label for="p1-${option.value}">
+                <span class="bet-icon">${option.icon}</span>
+                ${option.label}
+              </label>
+            </div>
+          `;
+          
+          player2Options.innerHTML += `
+            <div class="bet-option">
+              <input type="radio" name="player2Bet" id="p2-${option.value}" value="${option.value}" ${index === 1 ? 'checked' : ''}>
+              <label for="p2-${option.value}">
+                <span class="bet-icon">${option.icon}</span>
+                ${option.label}
+              </label>
+            </div>
+          `;
+        });
+      }
+    }
+    
+    // Create coins based on game mode
+    function createCoins() {
+      const coinContainer = document.getElementById('coinContainer');
+      coinContainer.innerHTML = '';
+      
+      const numCoins = gameMode === 'single' ? 1 : 2;
+      
+      for (let i = 0; i < numCoins; i++) {
+        const coin = document.createElement('div');
+        coin.className = 'coin';
+        coin.id = `coin${i}`;
+        
+        coin.innerHTML = `
+          <div class="coin-side heads">👑</div>
+          <div class="coin-side tails">⚜️</div>
+        `;
+        
+        coinContainer.appendChild(coin);
+      }
+    }
+    
+    // Flip the coins
+    function flipCoins() {
+      if (isFlipping) return;
+      
+      // Get player bets
+      players[0].bet = document.querySelector('input[name="player1Bet"]:checked').value;
+      players[1].bet = document.querySelector('input[name="player2Bet"]:checked').value;
+      
+      // Clear previous results
+      document.getElementById('resultMessage').textContent = '';
+      document.getElementById('resultDetails').textContent = '';
+      
+      // Disable flip button during animation
+      isFlipping = true;
+      document.getElementById('flipBtn').disabled = true;
+      
+      // Get coin elements
+      const coins = document.querySelectorAll('.coin');
+      const results = [];
+      
+      // Flip each coin
+      coins.forEach((coin, index) => {
+        // Determine result (50/50 chance)
+        const result = Math.random() < 0.5 ? 'heads' : 'tails';
+        results.push(result);
+        
+        // Add flip animation
         setTimeout(() => {
-          const result = Math.random() < 0.5 ? "Heads" : "Tails";
-          coinElement.textContent = result === "Heads" ? "🙂" : "🐍";
-
-          if (i === numCoins) {
-            coinsFlipped++;
-            if (guess1 === result) {
-              scores[0]++;
-              message += `${names[0]} guessed right!<br>`;
-            }
-            if (guess2 === result) {
-              scores[1]++;
-              message += `${names[1]} guessed right!<br>`;
-            }
-
-            if (coinsFlipped === numCoins) {
-              message += `It was ${result}!<br>`;
-              message += (guess1 !== result && guess2 !== result) ? "No one guessed correctly." : "";
-              document.getElementById("resultText").innerHTML = message;
-              updateScoreboard();
-            }
+          coin.className = 'coin';
+          void coin.offsetWidth; // Force reflow
+          coin.classList.add(result === 'heads' ? 'flip' : 'flip-tails');
+          
+          // If last coin, check results after animation
+          if (index === coins.length - 1) {
+            setTimeout(() => {
+              checkResults(results);
+              isFlipping = false;
+              document.getElementById('flipBtn').disabled = false;
+            }, 1500);
           }
-        }, 1000 * i); // Add delay for each coin flip
-      }
+        }, index * 300);
+      });
     }
-
-    // Function to update the scoreboard
-    function updateScoreboard() {
-      document.getElementById("score1").textContent = `${names[0]} Score: ${scores[0]}`;
-      document.getElementById("score2").textContent = `${names[1]} Score: ${scores[1]}`;
-
+    
+    // Check results and update scores
+    function checkResults(results) {
+      let resultText = '';
+      let detailsText = '';
+      
+      // Determine the outcome
+      let outcome = '';
+      
+      if (gameMode === 'single') {
+        outcome = results[0]; // 'heads' or 'tails'
+        detailsText = `The coin landed on ${outcome.charAt(0).toUpperCase() + outcome.slice(1)}!`;
+      } else {
+        if (results[0] === 'heads' && results[1] === 'heads') {
+          outcome = 'both-heads';
+          detailsText = 'Both coins landed on Heads!';
+        } else if (results[0] === 'tails' && results[1] === 'tails') {
+          outcome = 'both-tails';
+          detailsText = 'Both coins landed on Tails!';
+        } else {
+          outcome = 'mixed';
+          detailsText = 'The coins landed on one Heads and one Tails!';
+        }
+      }
+      
+      // Check which players guessed correctly
+      let player1Correct = players[0].bet === outcome;
+      let player2Correct = players[1].bet === outcome;
+      
+      // Update scores
+      if (player1Correct) players[0].score++;
+      if (player2Correct) players[1].score++;
+      
+      // Create result message
+      if (player1Correct && player2Correct) {
+        resultText = 'Both players guessed correctly!';
+      } else if (player1Correct) {
+        resultText = `${players[0].name} guessed correctly!`;
+      } else if (player2Correct) {
+        resultText = `${players[1].name} guessed correctly!`;
+      } else {
+        resultText = 'No one guessed correctly!';
+      }
+      
+      // Update UI
+      document.getElementById('resultMessage').textContent = resultText;
+      document.getElementById('resultDetails').textContent = detailsText;
+      updateScoreDisplay();
+      
       // Check for winner
-      if (scores[0] >= targetScore) {
-        document.getElementById("resultText").innerHTML = `${names[0]} wins! Congratulations!`;
-        document.querySelector("button").disabled = true;
-      } else if (scores[1] >= targetScore) {
-        document.getElementById("resultText").innerHTML = `${names[1]} wins! Congratulations!`;
-        document.querySelector("button").disabled = true;
+      checkForWinner();
+    }
+    
+    // Update score display
+    function updateScoreDisplay() {
+      document.getElementById('player1Score').textContent = players[0].score;
+      document.getElementById('player2Score').textContent = players[1].score;
+    }
+    
+    // Check if there's a winner
+    function checkForWinner() {
+      const player1Card = document.querySelector('.player-card:nth-child(1)');
+      const player2Card = document.querySelector('.player-card:nth-child(2)');
+      
+      // Remove previous winner class
+      player1Card.classList.remove('winner');
+      player2Card.classList.remove('winner');
+      
+      if (players[0].score >= targetScore) {
+        document.getElementById('resultMessage').textContent = `${players[0].name} wins the game!`;
+        player1Card.classList.add('winner');
+        document.getElementById('flipBtn').disabled = true;
+      } else if (players[1].score >= targetScore) {
+        document.getElementById('resultMessage').textContent = `${players[1].name} wins the game!`;
+        player2Card.classList.add('winner');
+        document.getElementById('flipBtn').disabled = true;
       }
     }
-
-    // Function to restart the game
-    function restart() {
-      scores = [0, 0];
-      document.getElementById("name1").value = "Player 1";
-      document.getElementById("name2").value = "Player 2";
-      document.getElementById("numCoins").value = "1";
-      document.getElementById("setup").classList.remove("hidden");
-      document.getElementById("game").classList.add("hidden");
-      document.querySelector(".coin-container").innerHTML = '';
-      document.getElementById("resultText").textContent = "Choose and flip!";
-      document.querySelector("button").disabled = false; // Enable button for new game
+    
+    // Reset the game
+    function resetGame() {
+      document.getElementById('setup').style.display = 'block';
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('flipBtn').disabled = false;
+      
+      // Reset mode selection
+      document.querySelectorAll('.mode-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      
+      gameMode = '';
+      document.getElementById('startGameBtn').disabled = true;
+      
+      // Reset player data
+      players = [
+        { name: 'Player 1', score: 0, bet: '' },
+        { name: 'Player 2', score: 0, bet: '' }
+      ];
     }
+    
+    // Update player name when input changes
+    document.getElementById('player1Name').addEventListener('change', function() {
+      players[0].name = this.value || 'Player 1';
+    });
+    
+    document.getElementById('player2Name').addEventListener('change', function() {
+      players[1].name = this.value || 'Player 2';
+    });
   </script>
 </body>
 </html>
