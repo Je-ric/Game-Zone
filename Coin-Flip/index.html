@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Coin Flip Bet Game</title>
+  <title>2-Player Coin Flip Game</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
       background-color: #f0f0f0;
-      padding: 50px;
+      padding: 40px;
     }
 
     .container {
@@ -18,82 +18,129 @@
       border-radius: 10px;
       display: inline-block;
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      max-width: 400px;
     }
 
     .coin {
       width: 100px;
-      height: 100px;
       margin: 20px auto;
       transition: transform 0.6s ease-in-out;
     }
 
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
-      margin: 10px;
-      cursor: pointer;
-    }
-
-    select {
+    select, button {
+      padding: 10px;
       font-size: 16px;
-      padding: 5px;
+      margin-top: 10px;
     }
 
-    #result {
-      font-weight: bold;
+    .scoreboard {
       margin-top: 20px;
+      font-weight: bold;
+    }
+
+    #playAgain {
+      display: none;
+      margin-top: 15px;
+    }
+
+    .player-indicator {
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .highlight {
+      color: green;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Heads or Tails - Bet Game</h1>
+    <h1>2-Player Coin Flip Game</h1>
     <img id="coinImage" class="coin" src="https://i.imgur.com/5nmEqzN.png" alt="Coin" />
-    
-    <div>
-      <label for="bet">Your bet:</label>
-      <select id="bet">
-        <option value="Heads">Heads</option>
-        <option value="Tails">Tails</option>
-      </select>
-    </div>
-    
-    <button onclick="flipCoin()">Flip Coin</button>
-    <p id="result">Choose your bet and flip the coin!</p>
+
+    <div class="player-indicator" id="playerIndicator">Player 1's turn</div>
+
+    <label for="bet">Choose your bet:</label><br>
+    <select id="bet">
+      <option value="Heads">Heads</option>
+      <option value="Tails">Tails</option>
+    </select><br>
+
+    <button id="flipButton" onclick="flipCoin()">Flip Coin</button>
+    <button id="playAgain" onclick="nextTurn()">Play Again</button>
+
+    <p id="result">Pick a side and flip the coin!</p>
+
+    <div class="scoreboard" id="scoreboard"></div>
   </div>
 
   <script>
+    const coinImage = document.getElementById("coinImage");
+    const resultText = document.getElementById("result");
+    const playerIndicator = document.getElementById("playerIndicator");
+    const scoreboard = document.getElementById("scoreboard");
+    const flipButton = document.getElementById("flipButton");
+    const playAgainBtn = document.getElementById("playAgain");
+
+    let currentPlayer = 0; // 0 = Player 1, 1 = Player 2
+    const players = ["Player 1", "Player 2"];
+
+    // Load or initialize stats
+    const stats = JSON.parse(localStorage.getItem("coinGameStats")) || {
+      player1: { wins: 0, losses: 0 },
+      player2: { wins: 0, losses: 0 },
+      totalPlays: 0
+    };
+
+    function updateScoreboard() {
+      scoreboard.innerHTML = `
+        Player 1 - Wins: ${stats.player1.wins}, Losses: ${stats.player1.losses} <br>
+        Player 2 - Wins: ${stats.player2.wins}, Losses: ${stats.player2.losses} <br>
+        Total Plays: ${stats.totalPlays}
+      `;
+    }
+
     function flipCoin() {
       const userBet = document.getElementById("bet").value;
-      const resultText = document.getElementById("result");
-      const coinImage = document.getElementById("coinImage");
 
-      // Simulate a coin flip
       const isHeads = Math.random() < 0.5;
       const result = isHeads ? "Heads" : "Tails";
 
-      // Animate flip
+      // Animate
       coinImage.style.transform = "rotateY(360deg)";
-
-      // After flip delay
       setTimeout(() => {
         coinImage.src = isHeads
-          ? "https://i.imgur.com/5nmEqzN.png" // heads image
-          : "https://i.imgur.com/MZcMZlv.png"; // tails image
-
-        // Reset rotation
+          ? "https://i.imgur.com/5nmEqzN.png"
+          : "https://i.imgur.com/MZcMZlv.png";
         coinImage.style.transform = "rotateY(0deg)";
 
-        // Check if user wins
+        const currentStats = currentPlayer === 0 ? stats.player1 : stats.player2;
         if (userBet === result) {
-          resultText.textContent = `It's ${result}! You win 🎉`;
-          resultText.style.color = "green";
+          currentStats.wins++;
+          resultText.innerHTML = `${players[currentPlayer]} guessed <b>${userBet}</b>. It's <b>${result}</b>! <span class="highlight">You win!</span>`;
         } else {
-          resultText.textContent = `It's ${result}! You lose 😢`;
-          resultText.style.color = "red";
+          currentStats.losses++;
+          resultText.innerHTML = `${players[currentPlayer]} guessed <b>${userBet}</b>. It's <b>${result}</b>! 😢 You lose.`;
         }
+
+        stats.totalPlays++;
+        localStorage.setItem("coinGameStats", JSON.stringify(stats));
+        updateScoreboard();
+
+        flipButton.style.display = "none";
+        playAgainBtn.style.display = "inline-block";
       }, 600);
     }
+
+    function nextTurn() {
+      currentPlayer = (currentPlayer + 1) % 2;
+      playerIndicator.textContent = `${players[currentPlayer]}'s turn`;
+      resultText.textContent = "Pick a side and flip the coin!";
+      flipButton.style.display = "inline-block";
+      playAgainBtn.style.display = "none";
+    }
+
+    updateScoreboard();
   </script>
 </body>
 </html>
