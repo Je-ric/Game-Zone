@@ -41,3 +41,33 @@ Example:
 ```bash
 cd game-folder-name
 start index.html
+
+
+## 🪪 Ownership
+
+All source code and content in this repository were created by **Hiro** ([Je-ric](https://github.com/Je-ric)).  
+You are free to view, fork, or adapt the code under the terms of the license below.
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.  
+You are free to use, copy, modify, merge, publish, or distribute the code — just include proper attribution.
+
+See the full [LICENSE](LICENSE) file for more details.
+
+---
+
+## 🙏 Acknowledgments
+
+Thanks to the open web community, developer forums, and countless tutorials that continue to inspire and support learning through projects like this.
+
+---
+
+## 📬 Contact / Feedback
+
+If you find this project helpful or want to share feedback, feel free to reach out via [GitHub Issues](https://github.com/Je-ric/Game-Zone/issues) or visit [Je-ric's GitHub profile](https://github.com/Je-ric).  
+Contributions and suggestions are always welcome!
+
+---
