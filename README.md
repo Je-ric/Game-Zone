@@ -38,10 +38,10 @@ Simply open the `index.html` file inside any game folder in your browser. No ins
 
 Example:
 
-```bash
 cd game-folder-name
 start index.html
 
+---
 
 ## 🪪 Ownership
 
