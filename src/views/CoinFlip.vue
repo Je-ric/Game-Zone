@@ -1,10 +1,20 @@
 <template>
-  <GameLayout title="Coin Flip Challenge" subtitle="Test your luck and prediction skills!" max-w="max-w-3xl">
-    <div class="w-full max-w-3xl flex flex-col gap-5">
+  <GameLayout title="Coin Flip Challenge" subtitle="Test your luck and prediction skills!">
+    <template #howtoplay>
+      <ol class="list-decimal list-inside space-y-2">
+        <li>Choose a game mode: <strong>Single Coin</strong> (one flip) or <strong>Double Coin</strong> (two flips).</li>
+        <li>Each player picks their bet — <strong>Heads</strong> or <strong>Tails</strong> — before each flip.</li>
+        <li>Click <em>Flip Coins</em> to flip. Players who guessed correctly earn a point.</li>
+        <li>First player to reach <strong>5 points</strong> wins the game.</li>
+        <li>Click <em>New Game</em> to return to mode selection and reset scores.</li>
+      </ol>
+    </template>
 
-      <!-- Setup -->
+    <div class="w-full flex flex-col gap-5">
+
+      <!-- Setup screen -->
       <template v-if="!gameStarted">
-        <BentoCard>
+        <BentoCard cls="items-center">
           <CardHeader icon="bx-game">Select Game Mode</CardHeader>
           <div class="flex justify-center gap-5 flex-wrap">
             <div v-for="mode in COIN_MODES" :key="mode.value"
@@ -20,41 +30,84 @@
         </BentoCard>
       </template>
 
-      <!-- Game -->
+      <!-- Game screen -->
       <template v-else>
-        <div class="grid grid-cols-2 gap-5">
-          <StatTile :value="`First to ${targetScore}`" label="points wins" value-color="text-indigo-600" :large="false" />
-          <StatTile :value="selectedMode === 'single' ? 'Single Coin' : 'Double Coin'" label="current mode" value-color="text-pink-500" :large="false" />
-        </div>
 
-        <!-- Players -->
-        <div class="grid grid-cols-2 gap-5">
-          <BentoCard v-for="(p, i) in players" :key="i" :cls="p.winner ? 'ring-2 ring-emerald-400' : ''">
-            <div :class="`h-1 -mt-5 -mx-5 mb-1 rounded-t-2xl ${i === 0 ? 'bg-indigo-400' : 'bg-pink-400'}`"></div>
-            <input v-model="p.name" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-indigo-400" />
-            <StatTile :value="p.score" label="score" :value-color="i === 0 ? 'text-indigo-500' : 'text-pink-500'" />
-            <RadioGroup :options="betOptions" v-model="p.bet" :name="`player${i}Bet`" grid-cols="grid-cols-1" />
+        <!-- Mobile: stacked -->
+        <div class="flex lg:hidden flex-col gap-4">
+          <div class="grid grid-cols-2 gap-4">
+            <BentoCard v-for="(p, i) in players" :key="i" :cls="p.winner ? 'ring-2 ring-emerald-400' : ''" cls="items-center text-center">
+              <div :class="`h-1 -mt-5 -mx-5 mb-2 rounded-t-2xl ${i === 0 ? 'bg-indigo-400' : 'bg-pink-400'}`"></div>
+              <input v-model="p.name" class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm text-center outline-none focus:border-indigo-400" />
+              <StatTile :value="p.score" label="score" :value-color="i === 0 ? 'text-indigo-500' : 'text-pink-500'" />
+              <RadioGroup :options="betOptions" v-model="p.bet" :name="`player${i}Bet`" grid-cols="grid-cols-1" />
+            </BentoCard>
+          </div>
+          <BentoCard cls="items-center">
+            <CardHeader icon="bx-coin">Flip Result</CardHeader>
+            <div class="flex justify-center gap-10 my-4">
+              <div v-for="(_, i) in coinResults" :key="i" :class="`coin ${coinAnim[i]}`">
+                <div class="coin-side heads">👑</div>
+                <div class="coin-side tails">⚜️</div>
+              </div>
+            </div>
+            <p class="font-semibold text-gray-700 text-center min-h-6">{{ resultMsg }}</p>
+            <p class="text-gray-400 text-sm text-center min-h-5">{{ resultDetail }}</p>
+            <div class="flex gap-3 justify-center">
+              <AppBtn @click="flipCoins" :disabled="isFlipping || gameOver" icon="bx-coin">Flip Coins</AppBtn>
+              <AppBtn variant="ghost" @click="resetGame" icon="bx-refresh">New Game</AppBtn>
+            </div>
           </BentoCard>
         </div>
 
-        <!-- Coins -->
-        <BentoCard cls="items-center">
-          <CardHeader icon="bx-coin">Flip Result</CardHeader>
-          <div class="flex justify-center gap-10 my-4">
-            <div v-for="(_, i) in coinResults" :key="i" :class="`coin ${coinAnim[i]}`">
-              <div class="coin-side heads">👑</div>
-              <div class="coin-side tails">⚜️</div>
-            </div>
-          </div>
-          <p class="font-semibold text-gray-700 text-center min-h-6">{{ resultMsg }}</p>
-          <p class="text-gray-400 text-sm text-center min-h-5">{{ resultDetail }}</p>
-          <div class="flex gap-3 justify-center">
-            <AppBtn @click="flipCoins" :disabled="isFlipping || gameOver" icon="bx-coin">Flip Coins</AppBtn>
-            <AppBtn variant="ghost" @click="resetGame" icon="bx-refresh">New Game</AppBtn>
-          </div>
-        </BentoCard>
-      </template>
+        <!-- Desktop: Player 1 | Coin | Player 2 -->
+        <div class="hidden lg:grid grid-cols-[220px_1fr_220px] gap-6 items-center">
 
+          <!-- Player 1 — left -->
+          <BentoCard :cls="players[0].winner ? 'ring-2 ring-emerald-400 items-center text-center' : 'items-center text-center'">
+            <div class="h-1 -mt-5 -mx-5 mb-2 rounded-t-2xl bg-indigo-400"></div>
+            <input v-model="players[0].name" class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm text-center outline-none focus:border-indigo-400" />
+            <StatTile :value="players[0].score" label="score" value-color="text-indigo-500" />
+            <RadioGroup :options="betOptions" v-model="players[0].bet" name="player0Bet" grid-cols="grid-cols-1" />
+            <div v-if="players[0].winner" class="text-emerald-600 font-bold text-sm">🏆 Winner!</div>
+          </BentoCard>
+
+          <!-- Coin — center -->
+          <BentoCard cls="items-center">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-xs font-bold px-2 py-1 rounded-full bg-gray-100 text-gray-500">
+                First to {{ targetScore }} pts
+              </span>
+              <span class="text-xs font-bold px-2 py-1 rounded-full bg-indigo-50 text-indigo-500">
+                {{ selectedMode === 'single' ? 'Single Coin' : 'Double Coin' }}
+              </span>
+            </div>
+            <CardHeader icon="bx-coin">Flip Result</CardHeader>
+            <div class="flex justify-center gap-10 my-4">
+              <div v-for="(_, i) in coinResults" :key="i" :class="`coin ${coinAnim[i]}`">
+                <div class="coin-side heads">👑</div>
+                <div class="coin-side tails">⚜️</div>
+              </div>
+            </div>
+            <p class="font-semibold text-gray-700 text-center min-h-6">{{ resultMsg }}</p>
+            <p class="text-gray-400 text-sm text-center min-h-5">{{ resultDetail }}</p>
+            <div class="flex gap-3 justify-center mt-2">
+              <AppBtn @click="flipCoins" :disabled="isFlipping || gameOver" icon="bx-coin">Flip Coins</AppBtn>
+              <AppBtn variant="ghost" @click="resetGame" icon="bx-refresh">New Game</AppBtn>
+            </div>
+          </BentoCard>
+
+          <!-- Player 2 — right -->
+          <BentoCard :cls="players[1].winner ? 'ring-2 ring-emerald-400 items-center text-center' : 'items-center text-center'">
+            <div class="h-1 -mt-5 -mx-5 mb-2 rounded-t-2xl bg-pink-400"></div>
+            <input v-model="players[1].name" class="w-full border border-gray-200 rounded-lg px-2 py-1.5 text-sm text-center outline-none focus:border-pink-400" />
+            <StatTile :value="players[1].score" label="score" value-color="text-pink-500" />
+            <RadioGroup :options="betOptions" v-model="players[1].bet" name="player1Bet" grid-cols="grid-cols-1" />
+            <div v-if="players[1].winner" class="text-emerald-600 font-bold text-sm">🏆 Winner!</div>
+          </BentoCard>
+        </div>
+
+      </template>
     </div>
   </GameLayout>
 </template>
@@ -91,51 +144,34 @@ function startGame() {
   coinResults.value = selectedMode.value === 'single' ? [null] : [null, null]
   coinAnim.value = coinResults.value.map(() => '')
   players.value.forEach(p => { p.score = 0; p.winner = false })
-  gameOver.value = false
-  resultMsg.value = ''
-  resultDetail.value = ''
+  gameOver.value = false; resultMsg.value = ''; resultDetail.value = ''
   gameStarted.value = true
 }
 
 function flipCoins() {
   if (isFlipping.value || gameOver.value) return
-  isFlipping.value = true
-  resultMsg.value = 'Flipping...'
-  resultDetail.value = ''
+  isFlipping.value = true; resultMsg.value = 'Flipping...'; resultDetail.value = ''
   coinAnim.value = coinAnim.value.map(() => '')
-
   setTimeout(() => {
     const results = coinResults.value.map(() => flipCoin())
     coinAnim.value = results.map(r => r === 'heads' ? 'flip' : 'flip-tails')
-    setTimeout(() => {
-      coinResults.value = results
-      checkResults(results)
-      isFlipping.value = false
-    }, 1600)
+    setTimeout(() => { coinResults.value = results; checkResults(results); isFlipping.value = false }, 1600)
   }, 50)
 }
 
 function checkResults(results) {
   const { outcome, detail } = resolveOutcome(results)
   resultDetail.value = detail
-
   const c1 = players.value[0].bet === outcome
   const c2 = players.value[1].bet === outcome
   if (c1) players.value[0].score++
   if (c2) players.value[1].score++
-
   if (c1 && c2) resultMsg.value = 'Both players guessed correctly!'
   else if (c1)  resultMsg.value = `${players.value[0].name} guessed correctly!`
   else if (c2)  resultMsg.value = `${players.value[1].name} guessed correctly!`
   else          resultMsg.value = 'No one guessed correctly!'
-
-  if (players.value[0].score >= targetScore) {
-    resultMsg.value = `${players.value[0].name} wins the game!`
-    players.value[0].winner = true; gameOver.value = true
-  } else if (players.value[1].score >= targetScore) {
-    resultMsg.value = `${players.value[1].name} wins the game!`
-    players.value[1].winner = true; gameOver.value = true
-  }
+  if (players.value[0].score >= targetScore) { resultMsg.value = `${players.value[0].name} wins!`; players.value[0].winner = true; gameOver.value = true }
+  else if (players.value[1].score >= targetScore) { resultMsg.value = `${players.value[1].name} wins!`; players.value[1].winner = true; gameOver.value = true }
 }
 
 function resetGame() {

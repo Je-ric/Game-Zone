@@ -1,6 +1,16 @@
 <template>
-  <GameLayout title="Guess the Number" subtitle="Guess the secret number within limited attempts." max-w="max-w-4xl">
-    <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-5">
+  <GameLayout title="Guess the Number" subtitle="Guess the secret number within limited attempts.">
+    <template #howtoplay>
+      <ol class="list-decimal list-inside space-y-2">
+        <li>Select a <strong>number range</strong> (e.g. 1–100) and a <strong>guess limit</strong> (e.g. 7 guesses).</li>
+        <li>Click <em>Start Game</em>. A secret number is randomly chosen within your range.</li>
+        <li>Type a number and click <em>Submit Guess</em> or press <strong>Enter</strong>.</li>
+        <li>You'll get a hint: <strong>📉 Too low</strong> or <strong>📈 Too high</strong> after each wrong guess.</li>
+        <li>Guess correctly before running out of attempts to win. Run out — the number is revealed.</li>
+      </ol>
+    </template>
+    <div class="w-full flex justify-center">
+    <div class="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-5">
 
       <!-- Settings -->
       <div class="flex flex-col gap-5">
@@ -42,6 +52,7 @@
         </template>
       </BentoCard>
 
+    </div>
     </div>
 
     <GameModal

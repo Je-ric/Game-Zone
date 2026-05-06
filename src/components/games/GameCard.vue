@@ -1,15 +1,18 @@
 <template>
-  <router-link :to="game.path" class="game-card bg-white rounded-2xl shadow p-5 flex flex-col gap-3 group">
-    <div :class="`w-12 h-12 rounded-xl ${game.iconBg} flex items-center justify-center text-white text-2xl`">
-      <i :class="`bx ${game.icon}`"></i>
+  <router-link :to="game.path" class="game-card bg-white rounded-2xl p-5 flex flex-col gap-3 group"
+    style="border:1px solid var(--border);box-shadow:var(--shadow-sm);text-decoration:none">
+    <div class="flex items-start justify-between gap-2">
+      <div :class="`w-11 h-11 rounded-xl ${game.iconBg} flex items-center justify-center text-xl shrink-0 ${game.iconColor}`">
+        <i :class="`bx ${game.icon}`"></i>
+      </div>
+      <span class="text-[10px] font-mono mt-0.5 shrink-0" style="color:var(--text-faint)">{{ game.num }}</span>
     </div>
-    <div>
-      <p class="text-xs text-gray-400 uppercase tracking-widest">{{ game.num }}</p>
-      <h2 class="text-lg font-semibold text-gray-800 group-hover:text-indigo-600 transition-colors">{{ game.name }}</h2>
-      <p class="text-sm text-gray-400 font-light mt-1">{{ game.desc }}</p>
+    <div class="flex-1 min-w-0">
+      <h2 class="text-sm font-bold leading-snug transition-colors" style="color:var(--text-base)">{{ game.name }}</h2>
+      <p class="text-xs mt-1 leading-relaxed line-clamp-2" style="color:var(--text-faint)">{{ game.desc }}</p>
     </div>
-    <div class="mt-auto flex items-center gap-1 text-indigo-500 text-sm font-medium">
-      Play <i class="bx bx-right-arrow-alt"></i>
+    <div class="flex items-center gap-1 text-xs font-bold mt-auto" style="color:var(--accent)">
+      Play <i class="bx bx-right-arrow-alt text-sm"></i>
     </div>
   </router-link>
 </template>
@@ -19,6 +22,11 @@ defineProps({ game: { type: Object, required: true } })
 </script>
 
 <style scoped>
-.game-card { transition: transform 0.2s, box-shadow 0.2s; }
-.game-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+.game-card { transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; }
+.game-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(22,163,74,0.18);
+  border-color: #4ade80;
+}
+.game-card:hover h2 { color: #16a34a; }
 </style>

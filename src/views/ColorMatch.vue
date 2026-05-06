@@ -1,54 +1,65 @@
 <template>
-  <GameLayout title="Color Match" subtitle="Match the displayed color with the correct option below!" max-w="max-w-2xl">
-    <div class="w-full max-w-2xl flex flex-col gap-5">
+  <GameLayout title="Color Match" subtitle="Match the displayed color with the correct option below!">
+    <template #howtoplay>
+      <ol class="list-decimal list-inside space-y-2">
+        <li>A <strong>color name or HEX code</strong> is shown. Your job is to find the matching color swatch.</li>
+        <li>Click the swatch that matches the displayed color.</li>
+        <li><strong>Correct</strong> — you earn a point and the next round starts. <strong>Wrong</strong> — the correct color is highlighted.</li>
+        <li>Change <strong>difficulty</strong> to increase the number of color options (3, 6, or 9).</li>
+        <li>Click <em>Restart</em> to reset your score and start fresh.</li>
+      </ol>
+    </template>
 
-      <div class="grid grid-cols-2 gap-5">
-        <BentoCard>
-          <CardHeader icon="bx-slider">Difficulty</CardHeader>
-          <select v-model="difficulty" @change="startGame" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-gray-50">
-            <option value="3">Easy (3 colors)</option>
-            <option value="6">Medium (6 colors)</option>
-            <option value="9">Hard (9 colors)</option>
-          </select>
-          <AppBtn variant="ghost" icon="bx-refresh" @click="restart">Restart</AppBtn>
-        </BentoCard>
-        <BentoCard>
-          <CardHeader icon="bx-trophy" icon-color="text-amber-500">Score</CardHeader>
-          <StatTile :value="score" label="correct guesses" value-color="text-indigo-600" />
-        </BentoCard>
-      </div>
+    <div class="w-full flex justify-center">
+      <div class="w-full max-w-2xl flex flex-col gap-5">
 
-      <BentoCard>
-        <CardHeader icon="bx-palette">Guess This Color</CardHeader>
-        <div class="bg-gray-50 rounded-xl p-4 text-center">
-          <p class="font-semibold text-indigo-600">{{ targetColor }}</p>
-          <p class="text-sm text-gray-400 mt-1">HEX: {{ targetHex }}</p>
-        </div>
-        <div :class="`grid gap-3 ${difficulty == 3 ? 'grid-cols-3' : 'grid-cols-3'}`">
-          <button
-            v-for="(color, i) in colors" :key="i"
-            @click="guess(color)"
-            :style="{ backgroundColor: color, outline: color === highlightColor ? '4px solid #10b981' : 'none', boxShadow: color === highlightColor ? '0 0 15px #10b981' : '' }"
-            :disabled="disabled"
-            class="aspect-square rounded-xl border-none cursor-pointer hover:-translate-y-1 transition-transform shadow disabled:cursor-not-allowed"
-          ></button>
+        <div class="grid grid-cols-2 gap-5">
+          <BentoCard>
+            <CardHeader icon="bx-slider">Difficulty</CardHeader>
+            <select v-model="difficulty" @change="startGame" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-400 bg-gray-50">
+              <option value="3">Easy (3 colors)</option>
+              <option value="6">Medium (6 colors)</option>
+              <option value="9">Hard (9 colors)</option>
+            </select>
+            <AppBtn variant="ghost" icon="bx-refresh" @click="restart">Restart</AppBtn>
+          </BentoCard>
+          <BentoCard>
+            <CardHeader icon="bx-trophy" icon-color="text-amber-500">Score</CardHeader>
+            <StatTile :value="score" label="correct guesses" value-color="text-indigo-600" />
+          </BentoCard>
         </div>
 
-        <!-- Timer bar -->
-        <div v-if="disabled" class="space-y-1">
-          <div class="text-xs text-gray-400 text-center">Next round in {{ timerSec }}s</div>
-          <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div class="h-full bg-gradient-to-r from-indigo-400 to-pink-400 transition-all" :style="{ width: timerPct + '%' }"></div>
+        <BentoCard>
+          <CardHeader icon="bx-palette">Guess This Color</CardHeader>
+          <div class="bg-gray-50 rounded-xl p-4 text-center">
+            <p class="font-semibold text-indigo-600">{{ targetColor }}</p>
+            <p class="text-sm text-gray-400 mt-1">HEX: {{ targetHex }}</p>
           </div>
-        </div>
+          <div class="grid gap-3 grid-cols-3">
+            <button
+              v-for="(color, i) in colors" :key="i"
+              @click="guess(color)"
+              :style="{ backgroundColor: color, outline: color === highlightColor ? '4px solid #10b981' : 'none', boxShadow: color === highlightColor ? '0 0 15px #10b981' : '' }"
+              :disabled="disabled"
+              class="aspect-square rounded-xl border-none cursor-pointer hover:-translate-y-1 transition-transform shadow disabled:cursor-not-allowed"
+            ></button>
+          </div>
 
-        <div class="flex justify-between items-center">
-          <span :class="`font-semibold ${feedback === '✅ Correct!' ? 'text-emerald-500' : feedback === '❌ Wrong!' ? 'text-red-500' : 'text-transparent'}`">
-            {{ feedback || '—' }}
-          </span>
-        </div>
-      </BentoCard>
+          <div v-if="disabled" class="space-y-1">
+            <div class="text-xs text-gray-400 text-center">Next round in {{ timerSec }}s</div>
+            <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-indigo-400 to-pink-400 transition-all" :style="{ width: timerPct + '%' }"></div>
+            </div>
+          </div>
 
+          <div class="flex justify-between items-center">
+            <span :class="`font-semibold ${feedback === '✅ Correct!' ? 'text-emerald-500' : feedback === '❌ Wrong!' ? 'text-red-500' : 'text-transparent'}`">
+              {{ feedback || '—' }}
+            </span>
+          </div>
+        </BentoCard>
+
+      </div>
     </div>
   </GameLayout>
 </template>
@@ -78,7 +89,6 @@ let timerInterval = null
 function startGame() {
   clearInterval(timerInterval)
   disabled.value = false; feedback.value = ''; highlightColor.value = ''; timerPct.value = 100
-
   colors.value = generateColors(parseInt(difficulty.value))
   targetColor.value = colors.value[Math.floor(Math.random() * colors.value.length)]
   targetHex.value = toHex(targetColor.value)

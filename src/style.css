@@ -1,1 +1,44 @@
+/* ── Font ── */
 * { font-family: 'Outfit', sans-serif; }
+
+/* ── GreenHost Color Palette ── */
+:root {
+  --gh-50:   #f0fdf4;
+  --gh-100:  #dcfce7;
+  --gh-200:  #bbf7d0;
+  --gh-300:  #86efac;
+  --gh-400:  #4ade80;
+  --gh-500:  #22c55e;
+  --gh-600:  #16a34a;
+  --gh-700:  #15803d;
+  --gh-800:  #166534;
+  --gh-900:  #14532d;
+  --gh-950:  #052e16;
+
+  --bg-page:  #f0fdf4;
+  --bg-card:  #ffffff;
+  --border:   #bbf7d0;
+  --text-base: #052e16;
+  --text-muted: #166534;
+  --text-faint: #15803d;
+  --accent:   #16a34a;
+  --accent-lt: #22c55e;
+  --shadow-sm: 0 2px 16px rgba(5,46,22,0.07);
+  --shadow-md: 0 8px 32px rgba(22,163,74,0.13);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  background-color: var(--bg-page);
+  color: var(--text-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--gh-50); }
+::-webkit-scrollbar-thumb { background: var(--gh-300); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gh-400); }
+* { scrollbar-width: thin; scrollbar-color: var(--gh-300) transparent; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
